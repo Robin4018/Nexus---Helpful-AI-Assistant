@@ -347,3 +347,19 @@ class UploadedFileDetailView(APIView):
         except UploadedFile.DoesNotExist:
             return Response({'error': 'File not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+class DeleteAccountView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def delete(self, request):
+        user = request.user
+        # Clean up files from disk before cascade deletion
+        files = UploadedFile.objects.filter(conversation__user=user)
+        for f in files:
+            if f.file and os.path.exists(f.file.path):
+                try:
+                    os.remove(f.file.path)
+                except OSError as os_err:
+                    print(f"Error deleting file from disk: {os_err}")
+        user.delete()
+        return Response({"detail": "Account deleted successfully."}, status=status.HTTP_200_OK)
+

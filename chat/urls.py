@@ -7,7 +7,8 @@ from .views import (
     MyTokenObtainPairView, 
     UserProfileView,
     UploadedFileUploadView,
-    UploadedFileDetailView
+    UploadedFileDetailView,
+    DeleteAccountView
 )
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -23,6 +24,9 @@ urlpatterns = [
 
     # URL for fetching the logged-in user's profile
     path('profile/', UserProfileView.as_view(), name='user-profile'),
+    
+    # URL for deleting the logged-in user's profile
+    path('profile/delete/', DeleteAccountView.as_view(), name='delete-account'),
     
     # URL for logging in (getting a token)
     path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),

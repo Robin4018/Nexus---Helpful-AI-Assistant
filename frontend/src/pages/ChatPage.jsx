@@ -89,6 +89,7 @@ const ChatPage = () => {
     // This is for auto-scrolling to the bottom of the chat
     const [searchQuery, setSearchQuery] = useState(''); // For searching through chats
     const [deleteConfirmId, setDeleteConfirmId] = useState(null); // Which chat are we deleting?
+    const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = useState(false); // Toggle delete account confirmation popup
     const [latestAiMessageId, setLatestAiMessageId] = useState(null); // Which message is currently typing?
     const [isPaused, setIsPaused] = useState(false); // Pause/Resume AI typing
     const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom
@@ -397,6 +398,19 @@ const ChatPage = () => {
         }
     };
 
+    // This actually deletes the user account from the database
+    const handleDeleteAccount = async () => {
+        try {
+            await api.delete('profile/delete/');
+            setShowDeleteAccountConfirm(false);
+            toast.success('Your account has been permanently deleted.');
+            logout();
+        } catch (err) {
+            console.error(err);
+            toast.error('Failed to delete account.');
+        }
+    };
+
     // Narrow down the list of chats based on what the user typed in search
     const filteredConversations = conversations.filter(c =>
         c.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -514,12 +528,22 @@ const ChatPage = () => {
                                 <div className="text-[10px] text-sidebar-foreground/40 truncate">Free Plan</div>
                             </div>
                         </div>
-                        <button
-                            onClick={logout}
-                            className="p-1.5 rounded-md text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                        >
-                            <LogOut size={16} />
-                        </button>
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => setShowDeleteAccountConfirm(true)}
+                                className="p-1.5 rounded-md text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive transition-colors"
+                                title="Delete Account"
+                            >
+                                <Trash2 size={15} />
+                            </button>
+                            <button
+                                onClick={logout}
+                                className="p-1.5 rounded-md text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive transition-colors"
+                                title="Sign Out"
+                            >
+                                <LogOut size={16} />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </motion.div>
@@ -957,6 +981,40 @@ const ChatPage = () => {
                     </div>
                 )}
             </AnimatePresence >
+
+            {/* DELETE ACCOUNT POPUP (Shows when you try to delete your account) */}
+            <AnimatePresence>
+                {showDeleteAccountConfirm && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-card border border-border shadow-2xl rounded-2xl p-6 max-w-sm w-full relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 left-0 w-full h-1 bg-destructive" />
+                            <h3 className="text-xl font-bold mb-2">Delete your account?</h3>
+                            <p className="text-muted-foreground text-sm mb-6">
+                                Are you sure you want to delete your account? This action is permanent and cannot be undone. All your conversations, messages, and uploaded files will be deleted forever.
+                            </p>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    onClick={() => setShowDeleteAccountConfirm(false)}
+                                    className="px-4 py-2 rounded-lg bg-sidebar-accent hover:bg-sidebar-accent/80 text-foreground transition-colors text-sm font-medium"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDeleteAccount}
+                                    className="px-4 py-2 rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors text-sm font-bold shadow-lg shadow-destructive/20"
+                                >
+                                    Yes, Delete Account
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
 
             <style>{`
