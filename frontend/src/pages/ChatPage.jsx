@@ -61,6 +61,8 @@ const ChatPage = () => {
     const navigate = useNavigate();
     const { user, logout } = useContext(AuthContext);
 
+    const newConvRef = useRef(null);
+
     const [conversations, setConversations] = useState([]);
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
@@ -125,9 +127,14 @@ const ChatPage = () => {
 
     useEffect(() => {
         if (id) {
-            myFetchMessages(id);
-            myFetchAttachments(id);
-            setLatestAiMessageId(null);
+            if (newConvRef.current === id) {
+                newConvRef.current = null;
+                setLatestAiMessageId(null);
+            } else {
+                myFetchMessages(id);
+                myFetchAttachments(id);
+                setLatestAiMessageId(null);
+            }
         } else {
             setMessages([]);
             setAttachments([]);
@@ -168,9 +175,19 @@ const ChatPage = () => {
     };
 
     const handleFileUpload = async (files) => {
-        if (!id) {
-            toast.error("Please create or select a chat conversation first!");
-            return;
+        let currentId = id;
+        if (!currentId) {
+            try {
+                const response = await api.post('conversations/', { title: 'New Conversation' });
+                currentId = response.data.id;
+                newConvRef.current = currentId;
+                myFetchConversations();
+                navigate(`/chat/${currentId}`);
+            } catch (err) {
+                console.error("Could not start a new chat for file upload!", err);
+                toast.error("Could not start a new chat to upload files.");
+                return;
+            }
         }
 
         for (let i = 0; i < files.length; i++) {
@@ -199,7 +216,7 @@ const ChatPage = () => {
             formData.append('storage_option', 'local');
 
             try {
-                const response = await api.post(`conversations/${id}/files/`, formData, {
+                const response = await api.post(`conversations/${currentId}/files/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     onUploadProgress: (progressEvent) => {
                         const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -242,7 +259,7 @@ const ChatPage = () => {
 
     const handleDragOver = (e) => {
         e.preventDefault();
-        if (id) setIsDragOver(true);
+        setIsDragOver(true);
     };
 
     const handleDragLeave = (e) => {
@@ -276,7 +293,43 @@ const ChatPage = () => {
         if ((!userQuery && attachments.length === 0) || loading) return;
 
         let currentId = id;
-        if (!currentId) return;
+        if (!currentId) {
+            try {
+                setLoading(true);
+                const response = await api.post('conversations/', { title: userQuery.slice(0, 40) || 'New Conversation' });
+                currentId = response.data.id;
+                newConvRef.current = currentId;
+                myFetchConversations();
+                navigate(`/chat/${currentId}`);
+                
+                // Construct temporary user message state
+                const userMsg = {
+                    sender: 'user',
+                    content: userQuery,
+                    timestamp: new Date().toISOString(),
+                    attachments: []
+                };
+                setMessages([userMsg]);
+                setInput('');
+                
+                // Send the message
+                const msgResponse = await api.post(`conversations/${currentId}/messages/`, { content: userQuery });
+                
+                setMessages([msgResponse.data.user_message, msgResponse.data.ai_message]);
+                setLatestAiMessageId(msgResponse.data.ai_message.id);
+                setIsPaused(false);
+                setIsGenerationDone(false);
+                if (isAtBottom) scrollToBottom();
+                myFetchConversations();
+            } catch (err) {
+                console.error("Could not start a new chat or send message!", err);
+                toast.error("Failed to start chat and send message.");
+                myFetchMessages(currentId);
+            } finally {
+                setLoading(false);
+            }
+            return;
+        }
 
         const stagedFilesForMessage = [...attachments];
 
@@ -586,7 +639,7 @@ const ChatPage = () => {
                                     transition={{ delay: 0.2 }}
                                     className="text-muted-foreground text-lg max-w-md mx-auto"
                                 >
-                                    I am your intelligent assistant. Start a chat on the left to begin!
+                                    I am your intelligent assistant. Ask me anything below to begin!
                                 </motion.p>
                             </div>
                         )}
@@ -735,7 +788,7 @@ const ChatPage = () => {
                     )}
                 </AnimatePresence>
 
-                {id && (
+                {true && (
                     <div className="p-4 bg-gradient-to-t from-background via-background to-transparent sticky bottom-0">
                         <div className="max-w-3xl mx-auto relative group">
                             <div className="absolute inset-0 rounded-xl bg-primary/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
