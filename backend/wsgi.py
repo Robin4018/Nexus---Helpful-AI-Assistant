@@ -13,7 +13,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 
 application = get_wsgi_application()
 
-'''
 # Temporary database cleanup script
 try:
     from django.contrib.auth import get_user_model
@@ -21,5 +20,4 @@ try:
     deleted_count, _ = User.objects.all().delete()
     print(f"--- DB CLEANUP: Deleted {deleted_count} users ---")
 except Exception as e:
-    print(f"--- DB CLEANUP ERROR: {e} ---")
-'''
+    print(f"--- DB CLEANUP ERROR: {e} ---")
