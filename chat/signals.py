@@ -1,4 +1,6 @@
+import os
 from django.dispatch import receiver
+# pyrefly: ignore [missing-import]
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from django.conf import settings
@@ -21,14 +23,51 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     )
 
     # Dispatch email (will print to console by default in development)
-    try:
-        send_mail(
-            subject="Password Reset for Nexus AI",
-            message=email_plaintext_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[reset_password_token.user.email],
-            fail_silently=False,
-        )
-    except Exception as e:
-        # Print SMTP errors to the console logs so you can see why Google failed to authenticate
-        print(f"--- SMTP EMAIL DELIVERY ERROR: {e} ---")
+    # Dispatch email
+    sendgrid_api_key = getattr(settings, 'SENDGRID_API_KEY', None) or os.getenv('SENDGRID_API_KEY')
+    
+    if sendgrid_api_key:
+        # SendGrid REST API (Uses HTTPS on Port 443 - never blocked by Render)
+        try:
+            import requests
+            import json
+            
+            from_email = settings.DEFAULT_FROM_EMAIL
+            sender_name = "Nexus AI"
+            sender_email = from_email
+            if "<" in from_email and ">" in from_email:
+                parts = from_email.split("<")
+                sender_name = parts[0].strip()
+                sender_email = parts[1].replace(">", "").strip()
+
+            url = "https://api.sendgrid.com/v3/mail/send"
+            headers = {
+                "Authorization": f"Bearer {sendgrid_api_key}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "personalizations": [{"to": [{"email": reset_password_token.user.email}]}],
+                "from": {"email": sender_email, "name": sender_name},
+                "subject": "Password Reset for Nexus AI",
+                "content": [{"type": "text/plain", "value": email_plaintext_message}]
+            }
+            
+            response = requests.post(url, headers=headers, data=json.dumps(payload))
+            if response.status_code not in [200, 201, 202]:
+                print(f"--- SENDGRID API ERROR: {response.status_code} - {response.text} ---")
+            else:
+                print("--- Password reset email successfully dispatched via SendGrid API ---")
+        except Exception as e:
+            print(f"--- SENDGRID DISPATCH ERROR: {e} ---")
+    else:
+        # Fallback to standard Django send_mail (SMTP or Console logs)
+        try:
+            send_mail(
+                subject="Password Reset for Nexus AI",
+                message=email_plaintext_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[reset_password_token.user.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            print(f"--- SMTP EMAIL DELIVERY ERROR: {e} ---")
