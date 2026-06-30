@@ -4,23 +4,23 @@ Nexus AI is a high-fidelity, focus-driven chat application built with **React (V
 
 ## Features
 
-- **Premium Design**: Built the Nexus-AI interface using **Tailwind CSS v4**.
-- **Intelligent AI**: Powered by **Google Gemini API** (`gemini-2.5-flash-lite`) for fast, multimodal-ready responses.
-- **Seamless UX**: Global page transitions powered by **Framer Motion** and **AnimatePresence**.
-- **Advanced UI Components**:
-  - Custom glassmorphism sidebar and chat area.
-  - **Sonner** toast notifications for status updates.
-  - Custom Nexus-styled deletion confirmation modals.
-  - Multi-turn conversation awareness and persistence.
-- **Secure Auth**: JWT-based authentication (Login/Signup) with protected workspace routing.
-- **Markdown Support**: Rich text rendering for AI responses includes code highlighting and styled typography.
+- **Premium Design**: Built the Nexus-AI interface using **Tailwind CSS**.
+- **Intelligent AI**: Powered by **Google Gemini API** (`gemini-2.5-flash`) for fast, multimodal responses.
+- **Document Analysis**: Upload documents (PDFs, Word documents, Text, Markdown) to get instant context-aware answers and citations.
+- **Seamless UX & Motion**: Global page transitions and list entries animated with **Framer Motion**.
+- **Full Mobile Responsiveness**: Adapts dynamically to all device screens, featuring a slide-in sidebar drawer and click-to-close blurred backdrops on mobile.
+- **Secure Authentication**: JWT-based user login and signup with protected routes.
+- **Self-Service Password Recovery**: Password reset system using secure email tokens.
+- **Self-Service Account Deletion**: Users can permanently delete their account. The server automatically cleans up all their uploaded files from the disk before deleting database entries.
+
+---
 
 ## Tech Stack
 
-- **Frontend**: React with Vite, Tailwind CSS, Framer Motion, Lucide React, Sonner.
-- **Backend**: Django, Django REST Framework, SimpleJWT.
-- **Database**: SQLite.
-- **AI Engine**: Google Gemini.
+- **Frontend**: React with Vite, Tailwind CSS, Framer Motion, Lucide React, Sonner Toast.
+- **Backend**: Django, Django REST Framework, SimpleJWT, python-docx, pypdf.
+- **Database**: SQLite (Development) / PostgreSQL (Production).
+- **AI Engine**: Google Gemini client.
 
 ---
 
@@ -63,7 +63,7 @@ Nexus AI is a high-fidelity, focus-driven chat application built with **React (V
    ```bash
    cd frontend
    ```
-2. Install modern dependencies:
+2. Install dependencies:
    ```bash
    npm install
    ```
