@@ -36,7 +36,7 @@ const SignupPage = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -48,7 +48,7 @@ const SignupPage = () => {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[100px]" />
             </div>
 
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-md relative z-10"
@@ -65,7 +65,7 @@ const SignupPage = () => {
                     <div className="p-6 sm:p-8">
                         <form onSubmit={handleSubmit} className="space-y-4">
                             {error && (
-                                <motion.div 
+                                <motion.div
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     className="bg-destructive/10 text-destructive text-sm p-3 rounded-lg border border-destructive/20 text-center"
@@ -73,17 +73,17 @@ const SignupPage = () => {
                                     {error}
                                 </motion.div>
                             )}
-                            
+
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Username</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
                                         <User size={18} />
                                     </div>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Pick a username" 
-                                        value={username} 
+                                    <input
+                                        type="text"
+                                        placeholder="Pick a username"
+                                        value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                         className="w-full bg-sidebar-accent/50 border border-border px-10 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                         required
@@ -97,10 +97,10 @@ const SignupPage = () => {
                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
                                         <Mail size={18} />
                                     </div>
-                                    <input 
-                                        type="email" 
-                                        placeholder="you@example.com" 
-                                        value={email} 
+                                    <input
+                                        type="email"
+                                        placeholder="you@example.com"
+                                        value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         className="w-full bg-sidebar-accent/50 border border-border px-10 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                         required
@@ -114,15 +114,15 @@ const SignupPage = () => {
                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
                                         <Lock size={18} />
                                     </div>
-                                    <input 
-                                        type={showPassword ? "text" : "password"} 
-                                        placeholder="••••••••" 
-                                        value={password} 
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="••••••••"
+                                        value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                         required
                                     />
-                                    {/* SHOW/HIDE PASSWORD BUTTON */}
+
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
@@ -152,7 +152,6 @@ const SignupPage = () => {
                                 </div>
                             </div>
 
-                            {/* SECURITY ANSWER INPUT */}
                             <div className="space-y-2">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 ml-1">
                                     <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Secret Answer</label>
@@ -161,10 +160,10 @@ const SignupPage = () => {
                                     </span>
                                 </div>
                                 <div className="relative group">
-                                    <input 
-                                        type="text" 
-                                        placeholder="Type your answer here" 
-                                        value={securityAnswer} 
+                                    <input
+                                        type="text"
+                                        placeholder="Type your answer here"
+                                        value={securityAnswer}
                                         onChange={(e) => setSecurityAnswer(e.target.value)}
                                         className="w-full bg-sidebar-accent/50 border border-border px-4 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                         required
@@ -172,8 +171,8 @@ const SignupPage = () => {
                                 </div>
                             </div>
 
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 disabled={loading}
                                 className="w-full bg-primary text-primary-foreground font-bold py-3.5 mt-2 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg shadow-primary/20 disabled:opacity-50"
                             >

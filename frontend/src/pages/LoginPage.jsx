@@ -24,7 +24,6 @@ const LoginPage = () => {
             toast.success('Signed in successfully');
             navigate('/chat');
         } catch (err) {
-            // Check if the server gave us a specific reason why login failed
             if (err.response && err.response.data && err.response.data.detail) {
                 setError('Wrong username or password. Please check your spelling!');
             } else {
@@ -109,7 +108,7 @@ const LoginPage = () => {
                                         className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                         required
                                     />
-                                    {/* SHOW/HIDE PASSWORD BUTTON */}
+
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}

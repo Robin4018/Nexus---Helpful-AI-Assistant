@@ -29,7 +29,6 @@ def extract_text_from_file(file_path, file_type):
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 text_content = f.read()
         else:
-            # General fallback check: try to read as utf-8 but don't crash
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 text_content = f.read()
     except Exception as e:
@@ -39,12 +38,6 @@ def extract_text_from_file(file_path, file_type):
     return text_content
 
 def analyze_file_content(client, uploaded_file_obj):
-    """
-    Using the initialized Gemini Client, run a quick first-pass analysis on the uploaded file:
-    - If it's an image, run OCR and visual description.
-    - If it's a document, run a text summarizer under Gemini to find key topics & summary.
-    Saves the output directly into the uploaded_file_obj in database.
-    """
     if not client:
         uploaded_file_obj.extracted_text = "AI client not ready."
         uploaded_file_obj.summary = "Cannot analyze without AI client config."
@@ -55,7 +48,7 @@ def analyze_file_content(client, uploaded_file_obj):
     file_type = uploaded_file_obj.file_type.lower()
     file_name = uploaded_file_obj.file_name
 
-    # 1. Handle Images (OCR & vision summary)
+    # Handling Images (OCR & vision summary)
     if any(img_type in file_type for img_type in ['image/', 'jpeg', 'png', 'gif', 'tiff']):
         try:
             with open(file_path, 'rb') as f:
@@ -102,7 +95,7 @@ def analyze_file_content(client, uploaded_file_obj):
             uploaded_file_obj.summary = f"Image '{file_name}' processing error."
             uploaded_file_obj.topics = ["Error"]
 
-    # 2. Handle Documents (PDF, Docx, Text, Markdown)
+    # Handling Documents (PDF, Docx, Text, Markdown)
     else:
         # Extract text first
         text = extract_text_from_file(file_path, file_type)
@@ -110,7 +103,6 @@ def analyze_file_content(client, uploaded_file_obj):
         
         if len(text.strip()) > 0:
             try:
-                # Truncate request to safety limits (e.g. first 20,000 characters) to keep summarization fast
                 text_preview = text[:20000]
                 prompt = (
                     f"You are analyzing an uploaded document named: '{file_name}'.\n"

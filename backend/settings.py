@@ -1,39 +1,23 @@
 """
-Django settings for backend project.
-
-This file is like the 'brain' of the Django project. It contains all the
-important settings that tell Django how to behave.
+Django settings for backend.
 """
 
 from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# We use load_dotenv to read secrets from the .env file
 load_dotenv()
-
-# BASE_DIR is the main folder where the project lives
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# DEBUG=True means Django will show us detailed error pages (great for fixing bugs!)
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-
-# SECRET_KEY is used for security. We keep it in the environment.
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
     if not DEBUG:
         raise ValueError("The SECRET_KEY environment variable must be set in production.")
     SECRET_KEY = 'django-insecure-sipvoc1s3dos=_c&)xfdehoa2tlj%j+mu2hc#&8^)&zig=$kx9'
 
-# Who can visit our website? We allow localhost, 127.0.0.1, and onrender.com domains.
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',') if os.getenv('ALLOWED_HOSTS') else ['localhost', '127.0.0.1', '.onrender.com']
 
-
-# INSTALLED_APPS lists all the 'modules' or 'plugins' our project is using.
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,7 +32,6 @@ INSTALLED_APPS = [
     'django_rest_passwordreset', # For password reset APIs
 ]
 
-# Middleware are like security guards or filters that messages pass through
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', # Serves static files in production
@@ -63,7 +46,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
-# Templates are used if we want to show HTML pages directly from Django
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -84,7 +66,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 import dj_database_url
 
-# Configure database: Default to local SQLite, use PostgreSQL if DATABASE_URL is set
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
     DATABASES = {
@@ -103,7 +84,6 @@ else:
     }
 
 
-# Password validation - Makes sure people don't use "12345" as a password
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -119,8 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Language and Time settings
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -129,13 +107,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# DRF SETTINGS - Tells Django how to handle the API and Authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -145,7 +119,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-# JWT SETTINGS - Settings for our login tokens (expire after 1 day)
+# JWT SETTINGS - Settings for login tokens (expire after 1 day)
 from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
@@ -159,19 +133,17 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# CORS configuration - Allow all origins for simple integration
+# CORS configuration 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# Our secret key for talking to the AI
+# Secret Key
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Media files configuration (for user uploaded attachments)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# WhiteNoise storage configuration for compressed and cached static files in production
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -181,7 +153,6 @@ STORAGES = {
     },
 }
 
-# Production SSL & security headers
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
@@ -192,7 +163,7 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Email Configuration - defaults to Console backend for local/dev logs output
+# Email Configuration 
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
@@ -201,6 +172,5 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'Nexus AI <no-reply@nexus-ai.com>')
 
-# Frontend website base URL for password reset links redirection
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
 

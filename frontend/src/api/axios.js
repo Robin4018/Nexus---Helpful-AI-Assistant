@@ -18,8 +18,7 @@ instance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        // Guard: error.response can be undefined on network errors.
-        // We only want to handle 401s that are NOT from the login page itself.
+
         const isLoginRequest = originalRequest.url.includes('login/');
 
         if (error.response && error.response.status === 401 && !originalRequest._retry && !isLoginRequest) {
@@ -41,7 +40,6 @@ instance.interceptors.response.use(
                     return Promise.reject(refreshError);
                 }
             } else {
-                // No refresh token — redirect to login immediately
                 localStorage.removeItem('access_token');
                 window.location.href = '/login';
             }

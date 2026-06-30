@@ -20,24 +20,15 @@ from django.views.static import serve
 from django.http import JsonResponse
 from django.conf import settings
 
-# This is a tiny function that just says "Hello" when you visit the main page
 def welcome_message(request):
     return JsonResponse({'status': 'ok', 'message': 'AI Chat API is running and ready!'})
 
-# This list tells Django which URLs go to which pieces of code
 urlpatterns = [
-    # When you visit http://localhost:8000/, you see the welcome message
     path('', welcome_message, name='api-root'),
-    
-    # When you visit http://localhost:8000/admin/, you see the Django Admin panel
     path('admin/', admin.site.urls),
-    
-    # All of our chat-related links (like signup/chat) start with /api/
-    # We tell Django to go look in the 'chat/urls.py' file for more details.
     path('api/', include('chat.urls')),
 ]
 
-# Serve media files in both development and production (necessary for Render local storage fallback)
 urlpatterns += [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

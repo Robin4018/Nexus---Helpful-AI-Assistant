@@ -1,8 +1,5 @@
 """
-WSGI config for backend project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
+WSGI config for backend.
 """
 
 import os

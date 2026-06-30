@@ -8,19 +8,19 @@ import { toast } from 'sonner';
 const ResetPasswordPage = () => {
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token') || '';
-    
+
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    
+
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!token) {
             toast.error('Token is missing! Please request a new password reset link.');
             return;
@@ -33,7 +33,6 @@ const ResetPasswordPage = () => {
 
         setLoading(true);
         try {
-            // Call the Django reset password confirm API
             await api.post('password_reset/confirm/', {
                 token: token,
                 password: password
@@ -53,7 +52,7 @@ const ResetPasswordPage = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -65,7 +64,7 @@ const ResetPasswordPage = () => {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[100px]" />
             </div>
 
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-md relative z-10"
@@ -87,17 +86,17 @@ const ResetPasswordPage = () => {
                                         Warning: Secure Token parameter is missing from this link. Resets will fail.
                                     </div>
                                 )}
-                                
+
                                 <div className="space-y-2">
                                     <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">New Password</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
                                             <Lock size={18} />
                                         </div>
-                                        <input 
-                                            type={showPassword ? "text" : "password"} 
-                                            placeholder="••••••••" 
-                                            value={password} 
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="••••••••"
+                                            value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                             required
@@ -118,10 +117,10 @@ const ResetPasswordPage = () => {
                                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
                                             <Lock size={18} />
                                         </div>
-                                        <input 
-                                            type={showPassword ? "text" : "password"} 
-                                            placeholder="••••••••" 
-                                            value={confirmPassword} 
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="••••••••"
+                                            value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
                                             className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                             required
@@ -129,8 +128,8 @@ const ResetPasswordPage = () => {
                                     </div>
                                 </div>
 
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     disabled={loading}
                                     className="w-full bg-primary text-primary-foreground font-bold py-3.5 mt-2 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg shadow-primary/20 disabled:opacity-50"
                                 >

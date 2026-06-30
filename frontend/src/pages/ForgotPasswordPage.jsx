@@ -18,7 +18,6 @@ const ForgotPasswordPage = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // Step 1: Submit identity to fetch security question
     const handleFetchQuestion = async (e) => {
         e.preventDefault();
         setError('');
@@ -38,7 +37,6 @@ const ForgotPasswordPage = () => {
         }
     };
 
-    // Step 2: Verify answer and set new password
     const handleResetPassword = async (e) => {
         e.preventDefault();
         setError('');
@@ -69,7 +67,7 @@ const ForgotPasswordPage = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -81,7 +79,7 @@ const ForgotPasswordPage = () => {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[100px]" />
             </div>
 
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-md relative z-10"
@@ -107,7 +105,7 @@ const ForgotPasswordPage = () => {
                 <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl overflow-hidden">
                     <div className="p-6 sm:p-8">
                         {error && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className="bg-destructive/10 text-destructive text-sm p-3 mb-4 rounded-lg border border-destructive/20 text-center"
@@ -121,17 +119,17 @@ const ForgotPasswordPage = () => {
                                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                                     Enter your registered username or email address below to fetch your security question.
                                 </p>
-                                
+
                                 <div className="space-y-2">
                                     <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Username or Email</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
                                             <User size={18} />
                                         </div>
-                                        <input 
-                                            type="text" 
-                                            placeholder="Enter username or email" 
-                                            value={identity} 
+                                        <input
+                                            type="text"
+                                            placeholder="Enter username or email"
+                                            value={identity}
                                             onChange={(e) => setIdentity(e.target.value)}
                                             className="w-full bg-sidebar-accent/50 border border-border px-10 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                             required
@@ -139,8 +137,8 @@ const ForgotPasswordPage = () => {
                                     </div>
                                 </div>
 
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     disabled={loading}
                                     className="w-full bg-primary text-primary-foreground font-bold py-3.5 mt-2 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg shadow-primary/20 disabled:opacity-50"
                                 >
@@ -169,10 +167,10 @@ const ForgotPasswordPage = () => {
                                 {/* Answer Input */}
                                 <div className="space-y-2">
                                     <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Secret Answer</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Type your secret answer" 
-                                        value={securityAnswer} 
+                                    <input
+                                        type="text"
+                                        placeholder="Type your secret answer"
+                                        value={securityAnswer}
                                         onChange={(e) => setSecurityAnswer(e.target.value)}
                                         className="w-full bg-sidebar-accent/50 border border-border px-4 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                         required
@@ -186,10 +184,10 @@ const ForgotPasswordPage = () => {
                                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
                                             <Lock size={18} />
                                         </div>
-                                        <input 
-                                            type={showPassword ? "text" : "password"} 
-                                            placeholder="••••••••" 
-                                            value={newPassword} 
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="••••••••"
+                                            value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                             required
@@ -211,10 +209,10 @@ const ForgotPasswordPage = () => {
                                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
                                             <Lock size={18} />
                                         </div>
-                                        <input 
-                                            type={showPassword ? "text" : "password"} 
-                                            placeholder="••••••••" 
-                                            value={confirmPassword} 
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="••••••••"
+                                            value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
                                             className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                             required
@@ -222,8 +220,8 @@ const ForgotPasswordPage = () => {
                                     </div>
                                 </div>
 
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     disabled={loading}
                                     className="w-full bg-primary text-primary-foreground font-bold py-3.5 mt-2 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg shadow-primary/20 disabled:opacity-50"
                                 >
@@ -244,7 +242,7 @@ const ForgotPasswordPage = () => {
                                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                                     Your password has been successfully updated! You can now log into your workspace with your new password.
                                 </p>
-                                <button 
+                                <button
                                     onClick={() => navigate('/login')}
                                     className="w-full bg-primary text-primary-foreground font-bold py-3.5 rounded-xl hover:opacity-90 transition-all shadow-lg"
                                 >
