@@ -18,6 +18,6 @@ try:
     from django.contrib.auth import get_user_model
     User = get_user_model()
     deleted_count, _ = User.objects.all().delete()
-    print(f"--- DB CLEANUP: Deleted {deleted_count} users ---")
+    print(f"--- DB CLEANUP: Deleted {deleted_count} users ---", flush=True)
 except Exception as e:
-    print(f"--- DB CLEANUP ERROR: {e} ---")
+    print(f"--- DB CLEANUP ERROR: {e} ---", flush=True)
