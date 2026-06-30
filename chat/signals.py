@@ -21,9 +21,14 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     )
 
     # Dispatch email (will print to console by default in development)
-    send_mail(
-        subject="Password Reset for Nexus AI",
-        message=email_plaintext_message,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[reset_password_token.user.email]
-    )
+    try:
+        send_mail(
+            subject="Password Reset for Nexus AI",
+            message=email_plaintext_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[reset_password_token.user.email],
+            fail_silently=False,
+        )
+    except Exception as e:
+        # Print SMTP errors to the console logs so you can see why Google failed to authenticate
+        print(f"--- SMTP EMAIL DELIVERY ERROR: {e} ---")
