@@ -5,6 +5,8 @@ import { AuthContext, AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ChatPage from './pages/ChatPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import { Toaster } from 'sonner';
 
 // This is a special component that checks if a user is logged in.
@@ -33,6 +35,8 @@ const AnimatedRoutes = () => {
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/login" element={<Navigate to="/" />} />
                 <Route path="/signup" element={<SignupPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
 
                 {/* Secret pages only for logged-in users */}
                 <Route

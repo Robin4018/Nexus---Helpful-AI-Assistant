@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import (
     SignupView, 
     ConversationListView, 
@@ -17,6 +17,9 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     # URL for signing up (making a new account)
     path('signup/', SignupView.as_view(), name='signup'),
+
+    # URL for password reset token generation and confirmation
+    path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 
     # URL for fetching the logged-in user's profile
     path('profile/', UserProfileView.as_view(), name='user-profile'),

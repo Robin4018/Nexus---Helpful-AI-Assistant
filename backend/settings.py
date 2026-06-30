@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt', # For logging in with tokens
     'corsheaders',              # This lets our React app talk to Django
     'chat',                     # Our own special chat app!
+    'django_rest_passwordreset', # For password reset APIs
 ]
 
 # Middleware are like security guards or filters that messages pass through
@@ -190,4 +191,16 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Email Configuration - defaults to Console backend for local/dev logs output
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'Nexus AI <no-reply@nexus-ai.com>')
+
+# Frontend website base URL for password reset links redirection
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
 
