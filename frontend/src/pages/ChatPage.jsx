@@ -26,7 +26,8 @@ import {
     Image,
     Loader2,
     AlertTriangle,
-    RotateCw
+    RotateCw,
+    UploadCloud
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { formatDistanceToNow } from 'date-fns';
@@ -69,7 +70,21 @@ const ChatPage = () => {
     const [messages, setMessages] = useState([]); // All messages in the current chat
     const [input, setInput] = useState(''); // What is currently typed in the box
     const [loading, setLoading] = useState(false); // Are we waiting for the AI?
-    const [sidebarOpen, setSidebarOpen] = useState(true); // Is the left menu open?
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768); // Is the left menu open?
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Is it mobile screen?
+
+    // Watch for window resize to handle responsiveness
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (!mobile) {
+                setSidebarOpen(true);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // This is for auto-scrolling to the bottom of the chat
     const [searchQuery, setSearchQuery] = useState(''); // For searching through chats
@@ -397,11 +412,18 @@ const ChatPage = () => {
         >
             {/* LEFT SIDEBAR (The menu with all your chats) */}
             <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ width: sidebarOpen ? 280 : 0, opacity: sidebarOpen ? 1 : 1, x: 0 }}
-                exit={{ x: -20, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="flex-shrink-0 flex flex-col bg-sidebar border-r border-sidebar-border overflow-hidden"
+                initial={{ x: isMobile ? -280 : -20, opacity: 0 }}
+                animate={{ 
+                    width: isMobile ? 280 : (sidebarOpen ? 280 : 0),
+                    x: isMobile ? (sidebarOpen ? 0 : -280) : 0,
+                    opacity: 1 
+                }}
+                exit={{ x: isMobile ? -280 : -20, opacity: 0 }}
+                transition={{ type: "tween", duration: 0.25 }}
+                className={cn(
+                    "flex-shrink-0 flex flex-col bg-sidebar border-r border-sidebar-border overflow-hidden z-40 transition-all",
+                    isMobile ? "fixed inset-y-0 left-0 shadow-2xl" : "relative"
+                )}
             >
                 {/* Logo and App Name */}
                 <div className="p-4 border-b border-sidebar-border h-16 flex items-center justify-between">
@@ -411,6 +433,14 @@ const ChatPage = () => {
                         </div>
                         <span className="font-bold text-lg tracking-tight">Nexus AI</span>
                     </div>
+                    {isMobile && (
+                        <button
+                            onClick={() => setSidebarOpen(false)}
+                            className="p-1.5 rounded-lg hover:bg-sidebar-accent text-sidebar-foreground/60 transition-colors"
+                        >
+                            <X size={18} />
+                        </button>
+                    )}
                 </div>
 
                 {/* New Chat Button and Search */}
@@ -494,6 +524,19 @@ const ChatPage = () => {
                 </div>
             </motion.div>
 
+            {/* BACKDROP OVERLAY ON MOBILE */}
+            <AnimatePresence>
+                {isMobile && sidebarOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSidebarOpen(false)}
+                        className="fixed inset-0 bg-background/60 backdrop-blur-sm z-30"
+                    />
+                )}
+            </AnimatePresence>
+ 
             {/* MAIN CHAT AREA (Where the talking happens) */}
             <div
                 onDragOver={handleDragOver}
@@ -510,15 +553,15 @@ const ChatPage = () => {
                     </div>
                 )}
                 {/* Header at the top */}
-                <header className="h-16 border-b border-border/50 flex items-center px-6 justify-between backdrop-blur-md bg-background/80 sticky top-0 z-10">
-                    <div className="flex items-center gap-4">
+                <header className="h-16 border-b border-border/50 flex items-center px-4 sm:px-6 justify-between backdrop-blur-md bg-background/80 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 sm:gap-4 overflow-hidden mr-2">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="p-1.5 rounded-md hover:bg-accent text-foreground/60 transition-colors"
+                            className="p-1.5 rounded-md hover:bg-accent text-foreground/60 transition-colors flex-shrink-0"
                         >
-                            {sidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
+                            {isMobile ? <Menu size={20} /> : (sidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />)}
                         </button>
-                        <h2 className="font-semibold text-sm tracking-wide text-foreground/90 uppercase">
+                        <h2 className="font-semibold text-xs sm:text-sm tracking-wide text-foreground/90 uppercase truncate">
                             {conversations.find(c => c.id == id)?.title || 'Nexus Workspace'}
                         </h2>
                     </div>
