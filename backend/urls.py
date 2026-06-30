@@ -15,10 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.static import serve
 from django.http import JsonResponse
 from django.conf import settings
-from django.conf.urls.static import static
 
 # This is a tiny function that just says "Hello" when you visit the main page
 def welcome_message(request):
@@ -37,6 +37,8 @@ urlpatterns = [
     path('api/', include('chat.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in both development and production (necessary for Render local storage fallback)
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
 

@@ -123,7 +123,7 @@ class MessageListCreateView(APIView):
             conversation__user=request.user
         ).order_by('timestamp')
         
-        my_serializer = MessageSerializer(all_messages, many=True)
+        my_serializer = MessageSerializer(all_messages, many=True, context={'request': request})
         return Response(my_serializer.data)
 
     def post(self, request, conversation_id):
