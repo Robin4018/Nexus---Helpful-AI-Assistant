@@ -435,7 +435,7 @@ const ChatPage = () => {
                 exit={{ x: isMobile ? -280 : -20, opacity: 0 }}
                 transition={{ type: "tween", duration: 0.25 }}
                 className={cn(
-                    "flex-shrink-0 flex flex-col bg-sidebar border-r border-sidebar-border overflow-hidden z-40 transition-all",
+                    "flex-shrink-0 flex flex-col bg-sidebar border-r border-sidebar-border overflow-hidden z-50 transition-all",
                     isMobile ? "fixed inset-y-0 left-0 shadow-2xl" : "relative"
                 )}
             >
@@ -503,10 +503,10 @@ const ChatPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            {/* The small delete button that appears when you hover */}
+                            {/* The small delete button that appears when you hover (always visible on mobile) */}
                             <button
                                 onClick={(e) => handleDeleteChat(e, conv.id)}
-                                className="opacity-0 group-hover:opacity-100 p-1 rounded-md hover:bg-destructive/10 hover:text-destructive text-sidebar-foreground/30 transition-all"
+                                className="opacity-70 hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 p-1 rounded-md hover:bg-destructive/10 hover:text-destructive text-sidebar-foreground/30 transition-all"
                             >
                                 <Trash2 size={14} />
                             </button>
@@ -556,7 +556,7 @@ const ChatPage = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setSidebarOpen(false)}
-                        className="fixed inset-0 bg-background/60 backdrop-blur-sm z-30"
+                        className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40"
                     />
                 )}
             </AnimatePresence>
