@@ -144,7 +144,6 @@ class MessageListCreateView(APIView):
 
             all_past_messages = list(Message.objects.filter(conversation=this_conversation).order_by('timestamp'))
             
-            # Formatting history for Gemini
             contents = []
             if len(all_past_messages) > 1:
                 current_role = None
@@ -188,6 +187,7 @@ class MessageListCreateView(APIView):
                     model='gemini-2.5-flash',
                     contents=contents,
                     config=types.GenerateContentConfig(
+                        tools=[{'google_search': {}}],
                         system_instruction="You are a helpful assistant named Nexus AI. Provide the answers politely and correctly. When answering queries based on the uploaded file contexts, always show citations or references to target documents/source sections. If the user asks you to translate, compare, or extract action items, do it cleanly with headings/bullet points."
                     )
                 )
