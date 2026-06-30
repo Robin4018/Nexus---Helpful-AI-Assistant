@@ -997,7 +997,6 @@ const ChatPage = () => {
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="bg-card border border-border shadow-2xl rounded-2xl p-6 max-w-sm w-full relative overflow-hidden"
                         >
-                            <div className="absolute top-0 left-0 w-full h-1 bg-destructive" />
                             <h3 className="text-xl font-bold mb-2">Delete this chat?</h3>
                             <p className="text-muted-foreground text-sm mb-6">
                                 If you click delete, all messages will be gone forever.
