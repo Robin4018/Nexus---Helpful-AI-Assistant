@@ -54,16 +54,16 @@ const LoginPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-md relative z-10"
             >
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-sidebar-accent rounded-2xl mb-4 shadow-2xl border border-border/50">
-                        <TerminalSquare size={32} className="text-primary" />
+                <div className="text-center mb-6 sm:mb-8">
+                    <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-sidebar-accent rounded-2xl mb-3 sm:mb-4 shadow-2xl border border-border/50">
+                        <TerminalSquare className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
                     </div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome Back</h1>
-                    <p className="text-muted-foreground mt-2">Sign in to your Nexus workspace</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Welcome Back</h1>
+                    <p className="text-sm sm:text-base text-muted-foreground mt-2">Sign in to your Nexus workspace</p>
                 </div>
 
                 <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl overflow-hidden">
-                    <div className="p-8">
+                    <div className="p-6 sm:p-8">
                         <form onSubmit={handleSubmit} className="space-y-5">
                             {error && (
                                 <motion.div
@@ -137,7 +137,7 @@ const LoginPage = () => {
                         </form>
                     </div>
 
-                    <div className="bg-sidebar-accent/30 py-4 px-8 border-t border-border/50 text-center">
+                    <div className="bg-sidebar-accent/30 py-4 px-6 sm:px-8 border-t border-border/50 text-center">
                         <p className="text-sm text-muted-foreground">
                             New to Nexus? <Link to="/signup" className="text-primary font-bold hover:underline transition-all">Create account</Link>
                         </p>
