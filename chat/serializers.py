@@ -1,11 +1,23 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
+from rest_framework.validators import UniqueValidator
 from .models import Conversation, Message
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     security_question = serializers.CharField(write_only=True, required=False)
     security_answer = serializers.CharField(write_only=True, required=False)
+    username = serializers.CharField(
+        max_length=150,
+        validators=[
+            RegexValidator(
+                regex=r'^[\w.@+-\s]+$',
+                message='Enter a valid username. This value may contain only letters, numbers, spaces, and @/./+/-/_ characters.'
+            ),
+            UniqueValidator(queryset=User.objects.all(), message='A user with that username already exists.')
+        ]
+    )
 
     class Meta:
         model = User

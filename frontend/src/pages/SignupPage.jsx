@@ -143,11 +143,11 @@ const SignupPage = () => {
                                         className="w-full bg-sidebar-accent/50 border border-border px-4 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm appearance-none cursor-pointer text-foreground/80 font-medium"
                                         required
                                     >
-                                        <option value="What was the name of your first pet?">What was the name of your first pet?</option>
-                                        <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                                        <option value="What was your favorite movie?">What was your favorite movie?</option>
+                                        <option value="What is your mother's name?">What is your mother's name?</option>
                                         <option value="What city were you born in?">What city were you born in?</option>
                                         <option value="What was your first school's name?">What was your first school's name?</option>
-                                        <option value="What is your favorite movie?">What is your favorite movie?</option>
+                                        <option value="Do you still remember your Ex? If yes, I feel sorry for you bud :/">Do you still remember your Ex name?</option>
                                     </select>
                                 </div>
                             </div>
