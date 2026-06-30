@@ -339,9 +339,7 @@ const ChatPage = () => {
             // If the chat was named "New Conversation", it might have a new name now!
             myFetchConversations();
         } catch (err) {
-            // Restore attachments if send fails
-            setAttachments(stagedFilesForMessage);
-            setInput(userQuery); // Keep the typed message in input box for easy edit/try again
+
             const errorMsg = err.response?.data?.error || 'Failed to send message';
             toast.error(errorMsg);
 
