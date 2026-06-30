@@ -290,6 +290,7 @@ const ChatPage = () => {
             const response = await api.post('conversations/', { title: 'New Conversation' });
             myFetchConversations(); // Refresh the list
             navigate(`/chat/${response.data.id}`); // Go to the new chat page
+            if (isMobile) setSidebarOpen(false); // Close sidebar drawer on mobile viewports
         } catch (err) {
             console.error("Could not start a new chat!", err);
         }
@@ -485,7 +486,10 @@ const ChatPage = () => {
                     {filteredConversations.map(conv => (
                         <div
                             key={conv.id}
-                            onClick={() => navigate(`/chat/${conv.id}`)}
+                            onClick={() => {
+                                navigate(`/chat/${conv.id}`);
+                                if (isMobile) setSidebarOpen(false); // Close sidebar drawer on mobile viewports
+                            }}
                             className={cn(
                                 "group flex items-center justify-between px-3 py-2.5 text-sm rounded-md cursor-pointer transition-colors relative",
                                 id == conv.id
