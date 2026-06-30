@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
         max_length=150,
         validators=[
             RegexValidator(
-                regex=r'^[\w.@+-\s]+$',
+                regex=r'^[\w.@+\-\s]+$',
                 message='Enter a valid username. This value may contain only letters, numbers, spaces, and @/./+/-/_ characters.'
             ),
             UniqueValidator(queryset=User.objects.all(), message='A user with that username already exists.')
