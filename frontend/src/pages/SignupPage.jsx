@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { TerminalSquare, Mail, Lock, User, ArrowRight, Loader2, UserPlus } from 'lucide-react';
+import { TerminalSquare, Mail, Lock, User, ArrowRight, Loader2, UserPlus, Eye, EyeOff } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 
@@ -10,6 +10,7 @@ const SignupPage = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { signup } = useContext(AuthContext);
@@ -112,13 +113,21 @@ const SignupPage = () => {
                                         <Lock size={18} />
                                     </div>
                                     <input 
-                                        type="password" 
+                                        type={showPassword ? "text" : "password"} 
                                         placeholder="••••••••" 
                                         value={password} 
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full bg-sidebar-accent/50 border border-border px-10 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
+                                        className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                         required
                                     />
+                                    {/* SHOW/HIDE PASSWORD BUTTON */}
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground/50 hover:text-primary transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
                                 </div>
                             </div>
 
