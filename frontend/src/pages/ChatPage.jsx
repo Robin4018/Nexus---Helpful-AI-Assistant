@@ -102,7 +102,9 @@ const ChatPage = () => {
     const [attachments, setAttachments] = useState([]); // File list for the active chat
     const [uploadingFiles, setUploadingFiles] = useState({}); // Tracking upload progress
     const [isDragOver, setIsDragOver] = useState(false); // Drag area detection
-    const fileInputRef = useRef(null); // Ref to activate file picker
+    const docInputRef = useRef(null); // Ref for document picker
+    const imgInputRef = useRef(null); // Ref for image picker
+    const [showUploadMenu, setShowUploadMenu] = useState(false); // Toggle upload popover menu
 
     // Helper function to scroll down
     const scrollToBottom = () => {
@@ -427,10 +429,10 @@ const ChatPage = () => {
             {/* LEFT SIDEBAR (The menu with all your chats) */}
             <motion.div
                 initial={{ x: isMobile ? -280 : -20, opacity: 0 }}
-                animate={{ 
+                animate={{
                     width: isMobile ? 280 : (sidebarOpen ? 280 : 0),
                     x: isMobile ? (sidebarOpen ? 0 : -280) : 0,
-                    opacity: 1 
+                    opacity: 1
                 }}
                 exit={{ x: isMobile ? -280 : -20, opacity: 0 }}
                 transition={{ type: "tween", duration: 0.25 }}
@@ -560,7 +562,7 @@ const ChatPage = () => {
                     />
                 )}
             </AnimatePresence>
- 
+
             {/* MAIN CHAT AREA (Where the talking happens) */}
             <div
                 onDragOver={handleDragOver}
@@ -893,27 +895,85 @@ const ChatPage = () => {
                                     onSubmit={handleSendMessage}
                                     className="relative flex items-center gap-2 bg-transparent p-0.5"
                                 >
-                                    {/* FILE INPUT TRIGGER BUTTON */}
-                                    <button
-                                        type="button"
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="p-2 ml-1 rounded-lg hover:bg-sidebar-accent hover:text-primary transition-all text-muted-foreground/75 flex items-center justify-center flex-shrink-0"
-                                        title="Upload files (Images, PDF, Word, TXT, MD)"
-                                        aria-label="Upload files picker"
-                                    >
-                                        <Paperclip size={18} />
-                                    </button>
+                                    {/* FILE INPUT TRIGGER BUTTON WITH POPUP OPTIONS */}
+                                    <div className="relative flex items-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowUploadMenu(!showUploadMenu)}
+                                            className={cn(
+                                                "p-2 ml-1 rounded-lg hover:bg-sidebar-accent hover:text-primary transition-all flex items-center justify-center flex-shrink-0",
+                                                showUploadMenu ? "text-primary bg-sidebar-accent" : "text-muted-foreground/75"
+                                            )}
+                                            title="Attach files"
+                                            aria-label="Upload files picker menu"
+                                        >
+                                            <Paperclip size={18} />
+                                        </button>
+
+                                        <AnimatePresence>
+                                            {showUploadMenu && (
+                                                <>
+                                                    {/* Fullscreen click-away shield */}
+                                                    <div
+                                                        className="fixed inset-0 z-40 bg-transparent"
+                                                        onClick={() => setShowUploadMenu(false)}
+                                                    />
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                        className="absolute bottom-12 left-1 z-50 min-w-[170px] bg-card border border-border/80 shadow-2xl rounded-2xl p-1.5 flex flex-col gap-0.5 backdrop-blur-md"
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setShowUploadMenu(false);
+                                                                docInputRef.current?.click();
+                                                            }}
+                                                            className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-foreground/80 hover:text-primary hover:bg-sidebar-accent/80 rounded-lg transition-colors text-left w-full"
+                                                        >
+                                                            <FileText size={15} className="text-primary/70" />
+                                                            <span>Upload Document</span>
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setShowUploadMenu(false);
+                                                                imgInputRef.current?.click();
+                                                            }}
+                                                            className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-foreground/80 hover:text-primary hover:bg-sidebar-accent/80 rounded-lg transition-colors text-left w-full"
+                                                        >
+                                                            <Image size={15} className="text-primary/70" />
+                                                            <span>Upload Image</span>
+                                                        </button>
+                                                    </motion.div>
+                                                </>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
 
                                     <input
                                         type="file"
-                                        ref={fileInputRef}
+                                        ref={docInputRef}
                                         onChange={(e) => {
                                             if (e.target.files) handleFileUpload(e.target.files);
-                                            e.target.value = ''; // Clear value
+                                            e.target.value = '';
                                         }}
                                         multiple
                                         className="hidden"
-                                        accept="image/*,.pdf,.doc,.docx,.txt,.md"
+                                        accept=".pdf,.doc,.docx,.txt,.md"
+                                    />
+
+                                    <input
+                                        type="file"
+                                        ref={imgInputRef}
+                                        onChange={(e) => {
+                                            if (e.target.files) handleFileUpload(e.target.files);
+                                            e.target.value = '';
+                                        }}
+                                        multiple
+                                        className="hidden"
+                                        accept="image/*"
                                     />
 
                                     <input
@@ -1028,4 +1088,4 @@ const ChatPage = () => {
     );
 };
 
-export default ChatPage;
+export default ChatPage;    
