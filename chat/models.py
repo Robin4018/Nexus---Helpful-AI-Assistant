@@ -57,3 +57,13 @@ class UploadedFile(models.Model):
     def __str__(self):
         return f"{self.file_name} ({self.file_type})"
 
+
+# This model extends the default User model with security question data
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    security_question = models.CharField(max_length=255)
+    security_answer = models.CharField(max_length=255) # We store the answer as lowercase, trimmed text
+
+    def __str__(self):
+        return f"Profile for {self.user.username}"
+

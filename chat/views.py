@@ -363,3 +363,54 @@ class DeleteAccountView(APIView):
         user.delete()
         return Response({"detail": "Account deleted successfully."}, status=status.HTTP_200_OK)
 
+
+class GetSecurityQuestionView(APIView):
+    # This endpoint is public so users who forgot their password can fetch their question
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        identity = request.data.get('identity', '').strip() # can be username or email
+        if not identity:
+            return Response({'error': 'Please enter your username or email address.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Search by username first, then email
+        user = User.objects.filter(username=identity).first() or User.objects.filter(email=identity).first()
+        if not user:
+            return Response({'error': 'No account associated with that username or email address.'}, status=status.HTTP_404_NOT_FOUND)
+            
+        try:
+            profile = user.profile
+            if not profile.security_question:
+                return Response({'error': 'No security question set up for this account.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'security_question': profile.security_question}, status=status.HTTP_200_OK)
+        except User.profile.RelatedObjectDoesNotExist:
+            return Response({'error': 'No security question set up for this account.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifySecurityQuestionView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        identity = request.data.get('identity', '').strip()
+        answer = request.data.get('security_answer', '').strip().lower()
+        new_password = request.data.get('new_password', '').strip()
+
+        if not identity or not answer or not new_password:
+            return Response({'error': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(username=identity).first() or User.objects.filter(email=identity).first()
+        if not user:
+            return Response({'error': 'No account associated with that username or email address.'}, status=status.HTTP_444_NOT_FOUND if False else status.HTTP_404_NOT_FOUND)
+
+        try:
+            profile = user.profile
+            if profile.security_answer.strip().lower() == answer:
+                # Answer is correct! Update password
+                user.set_password(new_password)
+                user.save()
+                return Response({'detail': 'Password updated successfully!'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Incorrect security answer.'}, status=status.HTTP_400_BAD_REQUEST)
+        except User.profile.RelatedObjectDoesNotExist:
+            return Response({'error': 'No security question set up for this account.'}, status=status.HTTP_400_BAD_REQUEST)
+

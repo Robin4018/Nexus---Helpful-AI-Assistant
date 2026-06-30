@@ -10,6 +10,8 @@ const SignupPage = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [securityQuestion, setSecurityQuestion] = useState('What was the name of your first pet?');
+    const [securityAnswer, setSecurityAnswer] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ const SignupPage = () => {
         setError('');
         setLoading(true);
         try {
-            await signup(username, email, password);
+            await signup(username, email, password, securityQuestion, securityAnswer);
             toast.success('Account created successfully!');
             navigate('/login');
         } catch (err) {
@@ -128,6 +130,45 @@ const SignupPage = () => {
                                     >
                                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
+                                </div>
+                            </div>
+
+                            {/* SECURITY QUESTION SELECTION */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Security Question</label>
+                                <div className="relative group">
+                                    <select
+                                        value={securityQuestion}
+                                        onChange={(e) => setSecurityQuestion(e.target.value)}
+                                        className="w-full bg-sidebar-accent/50 border border-border px-4 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm appearance-none cursor-pointer text-foreground/80 font-medium"
+                                        required
+                                    >
+                                        <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+                                        <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                                        <option value="What city were you born in?">What city were you born in?</option>
+                                        <option value="What was your first school's name?">What was your first school's name?</option>
+                                        <option value="What is your favorite movie?">What is your favorite movie?</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* SECURITY ANSWER INPUT */}
+                            <div className="space-y-2">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 ml-1">
+                                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Secret Answer</label>
+                                    <span className="text-[10px] text-primary font-semibold tracking-wide italic leading-none">
+                                        Provide an answer that you will never forget or is easy to remember!
+                                    </span>
+                                </div>
+                                <div className="relative group">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Type your answer here" 
+                                        value={securityAnswer} 
+                                        onChange={(e) => setSecurityAnswer(e.target.value)}
+                                        className="w-full bg-sidebar-accent/50 border border-border px-4 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
+                                        required
+                                    />
                                 </div>
                             </div>
 

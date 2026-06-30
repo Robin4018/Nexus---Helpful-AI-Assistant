@@ -8,19 +8,34 @@ from .models import Conversation, Message
 class UserSerializer(serializers.ModelSerializer):
     # We make the password write_only so it never gets sent back to the user
     password = serializers.CharField(write_only=True)
+    security_question = serializers.CharField(write_only=True, required=False)
+    security_answer = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
         # These are the pieces of info we want to share
-        fields = ('id', 'username', 'email', 'password')
+        fields = ('id', 'username', 'email', 'password', 'security_question', 'security_answer')
 
     def create(self, validated_data):
+        # Extract security fields
+        security_question = validated_data.pop('security_question', None)
+        security_answer = validated_data.pop('security_answer', None)
+
         # This function runs when we create a new user
         new_user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email', ''),
             password=validated_data['password']
         )
+
+        # Create profile with security question details if provided
+        if security_question and security_answer:
+            from .models import UserProfile
+            UserProfile.objects.create(
+                user=new_user,
+                security_question=security_question,
+                security_answer=security_answer.strip().lower()
+            )
         return new_user
 
 from .models import Conversation, Message, UploadedFile

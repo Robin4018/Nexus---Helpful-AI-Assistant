@@ -61,8 +61,14 @@ export const AuthProvider = ({ children }) => {
     };
 
     // Function to handle signing up
-    const signup = async (username, email, password) => {
-        const response = await api.post('signup/', { username, email, password });
+    const signup = async (username, email, password, security_question, security_answer) => {
+        const response = await api.post('signup/', { 
+            username, 
+            email, 
+            password, 
+            security_question, 
+            security_answer 
+        });
         return response.data;
     };
 

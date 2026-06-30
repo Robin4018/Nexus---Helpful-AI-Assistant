@@ -8,7 +8,9 @@ from .views import (
     UserProfileView,
     UploadedFileUploadView,
     UploadedFileDetailView,
-    DeleteAccountView
+    DeleteAccountView,
+    GetSecurityQuestionView,
+    VerifySecurityQuestionView
 )
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -21,6 +23,8 @@ urlpatterns = [
 
     # URL for password reset token generation and confirmation
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+    path('password_reset/security_question/', GetSecurityQuestionView.as_view(), name='password_reset_security_question'),
+    path('password_reset/security_question/verify/', VerifySecurityQuestionView.as_view(), name='password_reset_security_question_verify'),
 
     # URL for fetching the logged-in user's profile
     path('profile/', UserProfileView.as_view(), name='user-profile'),

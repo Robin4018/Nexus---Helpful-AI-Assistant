@@ -1,26 +1,67 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { motion } from 'framer-motion';
-import { KeyRound, Mail, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
+import { KeyRound, ArrowRight, Loader2, ArrowLeft, Lock, HelpCircle, CheckCircle, Eye, EyeOff, User } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from '../lib/utils';
 
 const ForgotPasswordPage = () => {
-    const [email, setEmail] = useState('');
+    const [step, setStep] = useState(1); // 1: Identity, 2: Answer & Reset, 3: Success
+    const [identity, setIdentity] = useState('');
+    const [securityQuestion, setSecurityQuestion] = useState('');
+    const [securityAnswer, setSecurityAnswer] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    // Step 1: Submit identity to fetch security question
+    const handleFetchQuestion = async (e) => {
         e.preventDefault();
+        setError('');
         setLoading(true);
         try {
-            // Sends a request to django-rest-passwordreset token generator
-            await api.post('password_reset/', { email });
-            setSubmitted(true);
-            toast.success('Reset email has been dispatched!');
+            const response = await api.post('password_reset/security_question/', { identity });
+            setSecurityQuestion(response.data.security_question);
+            setStep(2);
+            toast.success('Security question retrieved!');
         } catch (err) {
             console.error(err);
-            const errorMsg = err.response?.data?.email?.[0] || 'No account associated with that email address.';
+            const errorMsg = err.response?.data?.error || 'No account associated with that username or email.';
+            setError(errorMsg);
+            toast.error(errorMsg);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Step 2: Verify answer and set new password
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        if (newPassword !== confirmPassword) {
+            setError('Passwords do not match.');
+            toast.error('Passwords do not match.');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await api.post('password_reset/security_question/verify/', {
+                identity,
+                security_answer: securityAnswer,
+                new_password: newPassword
+            });
+            setStep(3);
+            toast.success('Password reset successfully!');
+        } catch (err) {
+            console.error(err);
+            const errorMsg = err.response?.data?.error || 'Incorrect answer or invalid parameters.';
+            setError(errorMsg);
             toast.error(errorMsg);
         } finally {
             setLoading(false);
@@ -47,31 +88,51 @@ const ForgotPasswordPage = () => {
             >
                 <div className="text-center mb-6 sm:mb-8">
                     <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-sidebar-accent rounded-2xl mb-3 sm:mb-4 shadow-2xl border border-border/50">
-                        <KeyRound className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
+                        {step === 3 ? (
+                            <CheckCircle className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
+                        ) : (
+                            <KeyRound className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
+                        )}
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Forgot Password</h1>
-                    <p className="text-sm sm:text-base text-muted-foreground mt-2">Recover your Nexus workspace access</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                        {step === 3 ? 'Success!' : 'Reset Password'}
+                    </h1>
+                    <p className="text-sm sm:text-base text-muted-foreground mt-2">
+                        {step === 1 && 'Enter details to verify your identity'}
+                        {step === 2 && 'Answer your security question'}
+                        {step === 3 && 'Your account password has been updated'}
+                    </p>
                 </div>
 
                 <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl overflow-hidden">
                     <div className="p-6 sm:p-8">
-                        {!submitted ? (
-                            <form onSubmit={handleSubmit} className="space-y-5">
+                        {error && (
+                            <motion.div 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="bg-destructive/10 text-destructive text-sm p-3 mb-4 rounded-lg border border-destructive/20 text-center"
+                            >
+                                {error}
+                            </motion.div>
+                        )}
+
+                        {step === 1 && (
+                            <form onSubmit={handleFetchQuestion} className="space-y-5">
                                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                                    Enter your registered email address below. We'll send you a link with a secure token to reset your password.
+                                    Enter your registered username or email address below to fetch your security question.
                                 </p>
                                 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Email Address</label>
+                                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Username or Email</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
-                                            <Mail size={18} />
+                                            <User size={18} />
                                         </div>
                                         <input 
-                                            type="email" 
-                                            placeholder="you@example.com" 
-                                            value={email} 
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            type="text" 
+                                            placeholder="Enter username or email" 
+                                            value={identity} 
+                                            onChange={(e) => setIdentity(e.target.value)}
                                             className="w-full bg-sidebar-accent/50 border border-border px-10 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
                                             required
                                         />
@@ -87,23 +148,108 @@ const ForgotPasswordPage = () => {
                                         <Loader2 className="animate-spin" size={20} />
                                     ) : (
                                         <>
-                                            Send Reset Link
+                                            Fetch Question
                                             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                         </>
                                     )}
                                 </button>
                             </form>
-                        ) : (
-                            <div className="text-center space-y-4 py-4">
-                                <div className="text-sm text-foreground/90 font-medium">
-                                    A password reset link has been dispatched to:
+                        )}
+
+                        {step === 2 && (
+                            <form onSubmit={handleResetPassword} className="space-y-5">
+                                <div className="p-3 bg-sidebar-accent/40 border border-border/50 rounded-xl flex items-start gap-2.5">
+                                    <HelpCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                    <div>
+                                        <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Your Question</div>
+                                        <div className="text-sm font-semibold text-foreground leading-relaxed mt-0.5">{securityQuestion}</div>
+                                    </div>
                                 </div>
-                                <div className="bg-sidebar-accent/50 border border-border rounded-xl p-3 text-xs sm:text-sm font-semibold select-all text-primary truncate max-w-full">
-                                    {email}
+
+                                {/* Answer Input */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Secret Answer</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Type your secret answer" 
+                                        value={securityAnswer} 
+                                        onChange={(e) => setSecurityAnswer(e.target.value)}
+                                        className="w-full bg-sidebar-accent/50 border border-border px-4 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
+                                        required
+                                    />
                                 </div>
-                                <p className="text-xs text-muted-foreground leading-relaxed mt-2">
-                                    Please check your inbox (or console logs in development) and click the reset link to update your password.
+
+                                {/* New Password */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">New Password</label>
+                                    <div className="relative group">
+                                        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
+                                            <Lock size={18} />
+                                        </div>
+                                        <input 
+                                            type={showPassword ? "text" : "password"} 
+                                            placeholder="••••••••" 
+                                            value={newPassword} 
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground/50 hover:text-primary transition-colors"
+                                        >
+                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Confirm New Password */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Confirm New Password</label>
+                                    <div className="relative group">
+                                        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/50 group-focus-within:text-primary transition-colors">
+                                            <Lock size={18} />
+                                        </div>
+                                        <input 
+                                            type={showPassword ? "text" : "password"} 
+                                            placeholder="••••••••" 
+                                            value={confirmPassword} 
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="w-full bg-sidebar-accent/50 border border-border pl-10 pr-12 py-3 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <button 
+                                    type="submit" 
+                                    disabled={loading}
+                                    className="w-full bg-primary text-primary-foreground font-bold py-3.5 mt-2 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg shadow-primary/20 disabled:opacity-50"
+                                >
+                                    {loading ? (
+                                        <Loader2 className="animate-spin" size={20} />
+                                    ) : (
+                                        <>
+                                            Update Password
+                                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+                        )}
+
+                        {step === 3 && (
+                            <div className="text-center py-4 space-y-5">
+                                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                                    Your password has been successfully updated! You can now log into your workspace with your new password.
                                 </p>
+                                <button 
+                                    onClick={() => navigate('/login')}
+                                    className="w-full bg-primary text-primary-foreground font-bold py-3.5 rounded-xl hover:opacity-90 transition-all shadow-lg"
+                                >
+                                    Sign In Now
+                                </button>
                             </div>
                         )}
                     </div>
