@@ -22,11 +22,32 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         f"Nexus AI Team"
     )
 
-    # Dispatch email (will print to console by default in development)
     # Dispatch email
+    mailgun_api_key = getattr(settings, 'MAILGUN_API_KEY', None) or os.getenv('MAILGUN_API_KEY')
+    mailgun_domain = getattr(settings, 'MAILGUN_DOMAIN', None) or os.getenv('MAILGUN_DOMAIN')
     sendgrid_api_key = getattr(settings, 'SENDGRID_API_KEY', None) or os.getenv('SENDGRID_API_KEY')
     
-    if sendgrid_api_key:
+    if mailgun_api_key and mailgun_domain:
+        # Mailgun REST API (Uses HTTPS on Port 443 - never blocked by Render)
+        try:
+            import requests
+            url = f"https://api.mailgun.net/v3/{mailgun_domain}/messages"
+            auth = ("api", mailgun_api_key)
+            data = {
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "to": reset_password_token.user.email,
+                "subject": "Password Reset for Nexus AI",
+                "text": email_plaintext_message
+            }
+            response = requests.post(url, auth=auth, data=data)
+            if response.status_code not in [200, 201, 202]:
+                print(f"--- MAILGUN API ERROR: {response.status_code} - {response.text} ---")
+            else:
+                print("--- Password reset email successfully dispatched via Mailgun API ---")
+        except Exception as e:
+            print(f"--- MAILGUN DISPATCH ERROR: {e} ---")
+            
+    elif sendgrid_api_key:
         # SendGrid REST API (Uses HTTPS on Port 443 - never blocked by Render)
         try:
             import requests
