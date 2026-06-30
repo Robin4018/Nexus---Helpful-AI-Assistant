@@ -75,5 +75,5 @@ Nexus AI is a high-fidelity, focus-driven chat application built with **React (V
 
 ---
 
-## 📜 License
+## License
 This project is for educational and internship demonstration purposes.
