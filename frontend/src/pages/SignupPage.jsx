@@ -147,7 +147,7 @@ const SignupPage = () => {
                                         <option value="What is your mother's name?">What is your mother's name?</option>
                                         <option value="What city were you born in?">What city were you born in?</option>
                                         <option value="What was your first school's name?">What was your first school's name?</option>
-                                        <option value="Do you still remember your Ex? If yes, I feel sorry for you bud :/">Do you still remember your Ex?</option>
+                                        <option value="Do you still remember your Ex?">Do you still remember your Ex?</option>
                                     </select>
                                 </div>
                             </div>

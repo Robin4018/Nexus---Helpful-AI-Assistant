@@ -19,6 +19,7 @@ import {
     Pause,
     Play,
     ChevronDown,
+    ChevronUp,
     Paperclip,
     X,
     FileText,
@@ -26,7 +27,12 @@ import {
     Loader2,
     AlertTriangle,
     RotateCw,
-    UploadCloud
+    UploadCloud,
+    Settings,
+    Info,
+    Globe,
+    Github,
+    Linkedin
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { formatDistanceToNow } from 'date-fns';
@@ -82,10 +88,28 @@ const ChatPage = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (showProfileMenu && 
+                profileMenuRef.current && !profileMenuRef.current.contains(event.target) &&
+                profileBarRef.current && !profileBarRef.current.contains(event.target)) {
+                setShowProfileMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showProfileMenu]);
+
     // For auto-scrolling to the bottom of the chat
     const [searchQuery, setSearchQuery] = useState('');
     const [deleteConfirmId, setDeleteConfirmId] = useState(null);
     const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = useState(false);
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [showAboutModal, setShowAboutModal] = useState(false);
+    const [activeAboutTab, setActiveAboutTab] = useState('overview');
+    const profileMenuRef = useRef(null);
+    const profileBarRef = useRef(null);
     const [latestAiMessageId, setLatestAiMessageId] = useState(null);
     const [isPaused, setIsPaused] = useState(false);
     const [isAtBottom, setIsAtBottom] = useState(true);
@@ -528,8 +552,46 @@ const ChatPage = () => {
                 </div>
 
                 {/* User Profile and Logout */}
-                <div className="p-3 border-t border-sidebar-border">
-                    <div className="flex items-center justify-between bg-sidebar-accent/30 rounded-lg p-2">
+                <div className="p-3 border-t border-sidebar-border relative">
+                    <AnimatePresence>
+                        {showProfileMenu && (
+                            <motion.div
+                                ref={profileMenuRef}
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                transition={{ duration: 0.15 }}
+                                className="absolute bottom-full left-3 right-3 z-50 mb-2 bg-card/95 border border-border/80 shadow-2xl rounded-xl p-1.5 backdrop-blur-md flex flex-col gap-0.5"
+                            >
+                                <button
+                                    onClick={() => {
+                                        setShowProfileMenu(false);
+                                        setShowSettingsModal(true);
+                                    }}
+                                    className="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-foreground/80 hover:text-primary hover:bg-sidebar-accent/80 rounded-lg transition-all duration-200 text-left w-full"
+                                >
+                                    <Settings size={15} className="text-primary/70 animate-hover-spin" />
+                                    <span>Settings</span>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowProfileMenu(false);
+                                        setShowAboutModal(true);
+                                    }}
+                                    className="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-foreground/80 hover:text-primary hover:bg-sidebar-accent/80 rounded-lg transition-all duration-200 text-left w-full border-t border-border/40"
+                                >
+                                    <Info size={15} className="text-primary/70" />
+                                    <span>About Creator</span>
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    <div
+                        ref={profileBarRef}
+                        onClick={() => setShowProfileMenu(!showProfileMenu)}
+                        className="flex items-center justify-between bg-sidebar-accent/30 hover:bg-sidebar-accent/60 rounded-lg p-2 cursor-pointer select-none transition-colors border border-transparent hover:border-sidebar-border"
+                    >
                         <div className="flex items-center gap-3 overflow-hidden">
                             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/20">
                                 <span className="text-xs font-bold text-primary">
@@ -541,21 +603,8 @@ const ChatPage = () => {
                                 <div className="text-[10px] text-sidebar-foreground/40 truncate">Free Plan</div>
                             </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                            <button
-                                onClick={() => setShowDeleteAccountConfirm(true)}
-                                className="p-1.5 rounded-md text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                                title="Delete Account"
-                            >
-                                <Trash2 size={15} />
-                            </button>
-                            <button
-                                onClick={logout}
-                                className="p-1.5 rounded-md text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                                title="Sign Out"
-                            >
-                                <LogOut size={16} />
-                            </button>
+                        <div className="text-sidebar-foreground/45 p-1 rounded-md transition-transform duration-200">
+                            {showProfileMenu ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
                         </div>
                     </div>
                 </div>
@@ -1047,6 +1096,244 @@ const ChatPage = () => {
                                 >
                                     Yes, Delete Account
                                 </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showSettingsModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-card border border-border shadow-2xl rounded-2xl p-6 max-w-md w-full relative overflow-hidden"
+                        >
+                            <button
+                                onClick={() => setShowSettingsModal(false)}
+                                className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-sidebar-accent text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                <X size={16} />
+                            </button>
+                            
+                            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                <Settings size={20} className="text-primary" />
+                                <span>Settings</span>
+                            </h3>
+
+                            <div className="space-y-5">
+                                {/* Profile Details */}
+                                <div className="bg-sidebar-accent/20 border border-sidebar-border/40 rounded-xl p-4 flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+                                        <span className="text-lg font-bold text-primary">
+                                            {(user?.username || 'U')[0].toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="text-sm font-semibold text-foreground truncate">{user?.username || 'User'}</div>
+                                        <div className="text-xs text-muted-foreground mt-0.5 font-medium">Nexus AI Free Member</div>
+                                    </div>
+                                </div>
+
+                                {/* General Info / Stats */}
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-xs py-1.5 border-b border-border/40">
+                                        <span className="text-muted-foreground font-medium">Account Status</span>
+                                        <span className="font-semibold text-emerald-500">Active</span>
+                                    </div>
+                                    <div className="flex justify-between text-xs py-1.5 border-b border-border/40">
+                                        <span className="text-muted-foreground font-medium">Workspace Plan</span>
+                                        <span className="font-semibold text-primary">Free Tier</span>
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-border pt-4">
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
+                                        Actions
+                                    </h4>
+                                    <div className="flex flex-col gap-2">
+                                        <button
+                                            onClick={() => {
+                                                setShowSettingsModal(false);
+                                                logout();
+                                            }}
+                                            className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-border hover:bg-sidebar-accent/50 hover:text-primary transition-all text-sm font-semibold"
+                                        >
+                                            <span className="flex items-center gap-2">
+                                                <LogOut size={16} />
+                                                <span>Sign Out</span>
+                                            </span>
+                                        </button>
+                                        
+                                        <button
+                                            onClick={() => {
+                                                setShowSettingsModal(false);
+                                                setShowDeleteAccountConfirm(true);
+                                            }}
+                                            className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-destructive/20 hover:border-destructive hover:bg-destructive/10 text-destructive transition-all text-sm font-semibold"
+                                        >
+                                            <span className="flex items-center gap-2">
+                                                <Trash2 size={16} />
+                                                <span>Delete Account</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showAboutModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-card border border-border shadow-2xl rounded-2xl max-w-xl w-full relative overflow-hidden flex flex-col max-h-[90vh]"
+                        >
+                            {/* Top decorative gradient line */}
+                            <div className="h-1 w-full bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
+                            
+                            <button
+                                onClick={() => setShowAboutModal(false)}
+                                className="absolute top-5 right-4 p-1.5 rounded-lg hover:bg-sidebar-accent text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                <X size={16} />
+                            </button>
+
+                            <div className="p-6 flex-1 overflow-y-auto">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                        <Info size={20} className="text-primary animate-pulse" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold">About Nexus AI</h3>
+                                        <p className="text-xs text-muted-foreground">Version 1.0.0 • Focus-driven AI Workspace</p>
+                                    </div>
+                                </div>
+
+                                {/* Tabs selector */}
+                                <div className="flex border-b border-border mb-6">
+                                    <button
+                                        onClick={() => setActiveAboutTab('overview')}
+                                        className={`flex-1 py-2 text-sm font-semibold border-b-2 transition-all ${
+                                            activeAboutTab === 'overview'
+                                                ? 'border-primary text-primary'
+                                                : 'border-transparent text-muted-foreground hover:text-foreground'
+                                        }`}
+                                    >
+                                        What & Why
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveAboutTab('creator')}
+                                        className={`flex-1 py-2 text-sm font-semibold border-b-2 transition-all ${
+                                            activeAboutTab === 'creator'
+                                                ? 'border-primary text-primary'
+                                                : 'border-transparent text-muted-foreground hover:text-foreground'
+                                        }`}
+                                    >
+                                        The Creator
+                                    </button>
+                                </div>
+
+                                {/* Tab content */}
+                                <div className="space-y-4 min-h-[250px]">
+                                    {activeAboutTab === 'overview' ? (
+                                        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
+                                            <div>
+                                                <h4 className="font-bold text-foreground mb-1">What is Nexus AI?</h4>
+                                                <p>
+                                                    Nexus AI is a focus-driven intelligent workspace designed to supercharge your productivity. It features a curated charcoal-amber dark mode, glassmorphism design elements, and interactive animations for a distraction-free AI assistant experience.
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <h4 className="font-bold text-foreground mb-1">Key Capabilities</h4>
+                                                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                                                    <li className="flex items-start gap-2 bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg p-2 text-xs">
+                                                        <span className="text-primary font-bold">💬</span>
+                                                        <span><strong>Gemini Assist:</strong> Advanced LLM reasoning using the Google Gemini model.</span>
+                                                    </li>
+                                                    <li className="flex items-start gap-2 bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg p-2 text-xs">
+                                                        <span className="text-primary font-bold">📁</span>
+                                                        <span><strong>Doc Uploads:</strong> Chat with PDFs, DOCX, MD, and TXT files up to 10MB.</span>
+                                                    </li>
+                                                    <li className="flex items-start gap-2 bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg p-2 text-xs">
+                                                        <span className="text-primary font-bold">⚡</span>
+                                                        <span><strong>Instant UX:</strong> Real-time streaming response render with markdown formatting.</span>
+                                                    </li>
+                                                    <li className="flex items-start gap-2 bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg p-2 text-xs">
+                                                        <span className="text-primary font-bold">🔒</span>
+                                                        <span><strong>Self-Service:</strong> Complete control of workspace data & account removal.</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start text-sm">
+                                            {/* Left Column: Picture Placeholder */}
+                                            <div className="flex flex-col items-center gap-3">
+                                                <div className="w-32 h-32 rounded-2xl bg-sidebar-accent/40 border border-sidebar-border/50 flex flex-col items-center justify-center p-3 text-center relative overflow-hidden group">
+                                                    <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent group-hover:opacity-100 transition-opacity" />
+                                                    <User size={36} className="text-primary/60 mb-1" />
+                                                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-tight">
+                                                        Creator Photo Placeholder
+                                                    </span>
+                                                </div>
+                                                <span className="text-[10px] text-muted-foreground italic text-center max-w-[140px]">
+                                                    Ready to be updated with your details & photo!
+                                                </span>
+                                            </div>
+
+                                            {/* Right Column: Bio Details */}
+                                            <div className="flex-1 space-y-4">
+                                                <div>
+                                                    <h4 className="text-lg font-bold text-foreground">Project Creator</h4>
+                                                    <p className="text-xs text-primary font-medium mt-0.5">Full Stack Developer & AI Enthusiast</p>
+                                                </div>
+                                                
+                                                <p className="text-muted-foreground text-xs leading-relaxed">
+                                                    I am the developer behind Nexus AI. I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
+                                                </p>
+
+                                                <div className="pt-2">
+                                                    <h5 className="text-xs font-bold text-foreground uppercase tracking-wider mb-2">Connect with me</h5>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        <a
+                                                            href="#github"
+                                                            onClick={(e) => e.preventDefault()}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground"
+                                                        >
+                                                            <Github size={14} />
+                                                            <span>GitHub</span>
+                                                        </a>
+                                                        <a
+                                                            href="#linkedin"
+                                                            onClick={(e) => e.preventDefault()}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground"
+                                                        >
+                                                            <Linkedin size={14} />
+                                                            <span>LinkedIn</span>
+                                                        </a>
+                                                        <a
+                                                            href="#portfolio"
+                                                            onClick={(e) => e.preventDefault()}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground"
+                                                        >
+                                                            <Globe size={14} />
+                                                            <span>Portfolio</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </motion.div>
                     </div>
