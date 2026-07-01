@@ -1247,7 +1247,7 @@ const ChatPage = () => {
                                             <div>
                                                 <h4 className="font-bold text-foreground mb-1">What is Nexus AI?</h4>
                                                 <p>
-                                                    Nexus AI is a focus-driven intelligent workspace designed to supercharge your productivity. It features a curated charcoal-amber dark mode, glassmorphism design elements, and interactive animations for a distraction-free AI assistant experience.
+                                                    Nexus AI is a simple, easy-to-use digital workspace designed to help you get things done faster. With a comfortable dark theme, modern look, and smooth animations, it provides a quiet, distraction-free environment to chat with your AI assistant.
                                                 </p>
                                             </div>
 
@@ -1274,55 +1274,51 @@ const ChatPage = () => {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start text-sm">
-                                            {/* Left Column: Picture */}
-                                            <div className="flex flex-col items-center gap-3">
-                                                <div className="w-32 h-32 rounded-2xl border border-sidebar-border/50 overflow-hidden relative group shadow-lg">
-                                                    <img
-                                                        src="/robin.jpg"
-                                                        alt="Robin"
-                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                                    />
-                                                </div>
-                                            </div>
+                                         <div className="space-y-5 text-sm">
+                                             {/* Header Box: Avatar, Name, Info & Connect buttons */}
+                                             <div className="flex items-center gap-4 bg-sidebar-accent/15 border border-sidebar-border/30 rounded-2xl p-4">
+                                                 <div className="w-20 h-20 rounded-full border-2 border-primary/30 overflow-hidden flex-shrink-0 shadow-md">
+                                                     <img
+                                                         src="/robin.jpg"
+                                                         alt="Robin"
+                                                         className="w-full h-full object-cover"
+                                                     />
+                                                 </div>
+                                                 <div className="flex-1 min-w-0">
+                                                     <h4 className="text-lg font-bold text-foreground">Robin</h4>
+                                                     <p className="text-xs text-primary font-semibold mt-0.5">MCA Graduate</p>
+                                                     
+                                                     <div className="flex gap-2 mt-3">
+                                                         <a
+                                                             href="https://github.com/Robin4018"
+                                                             target="_blank"
+                                                             rel="noopener noreferrer"
+                                                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground shadow-sm"
+                                                         >
+                                                             <Github size={13} />
+                                                             <span>GitHub</span>
+                                                         </a>
+                                                         <a
+                                                             href="https://www.linkedin.com/in/robin-c-5753a721b/"
+                                                             target="_blank"
+                                                             rel="noopener noreferrer"
+                                                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground shadow-sm"
+                                                         >
+                                                             <Linkedin size={13} />
+                                                             <span>LinkedIn</span>
+                                                         </a>
+                                                     </div>
+                                                 </div>
+                                             </div>
 
-                                            {/* Right Column: Bio Details */}
-                                            <div className="flex-1 space-y-4">
-                                                <div>
-                                                    <h4 className="text-lg font-bold text-foreground">Robin</h4>
-                                                    <p className="text-xs text-primary font-medium mt-0.5">MCA Graduate</p>
-                                                </div>
-
-                                                <p className="text-muted-foreground text-xs leading-relaxed">
-                                                    Hi, I'm a fresh graduate with the passion for creating web applications and exploring artificial intelligence. I enjoy turning ideas into practical solutions through clean code and thoughtful design. I am the developer behind Nexus AI. I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
-                                                </p>
-
-                                                <div className="pt-2">
-                                                    <h5 className="text-xs font-bold text-foreground uppercase tracking-wider mb-2">Connect with me</h5>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        <a
-                                                            href="https://github.com/Robin4018"
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground"
-                                                        >
-                                                            <Github size={14} />
-                                                            <span>GitHub</span>
-                                                        </a>
-                                                        <a
-                                                            href="https://www.linkedin.com/in/robin-c-5753a721b/"
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground"
-                                                        >
-                                                            <Linkedin size={14} />
-                                                            <span>LinkedIn</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
+                                             {/* Biography Details (Full Width) */}
+                                             <div className="bg-sidebar-accent/5 rounded-xl p-4 border border-sidebar-border/25 leading-relaxed text-muted-foreground">
+                                                 <p className="text-xs sm:text-sm">
+                                                     Hi, I'm a fresh graduate with a passion for creating web applications and exploring artificial intelligence. I enjoy turning ideas into practical solutions through clean code and thoughtful design. As the developer behind Nexus AI, I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
+                                                 </p>
+                                             </div>
+                                         </div>
+                                     )}
                                 </div>
                             </div>
                         </motion.div>
