@@ -144,6 +144,17 @@ class MessageListCreateView(APIView):
 
             all_past_messages = list(Message.objects.filter(conversation=this_conversation).order_by('timestamp'))
             
+            def get_message_content_with_attachments(m):
+                m_text = m.content
+                atts = m.attachments.all()
+                if atts.exists():
+                    files_context = "CONTEXT FROM FILES UPLOADED BY USER:\n"
+                    for att in atts:
+                        files_context += f"\n--- Start File: {att.file_name} ---\n{att.extracted_text}\n--- End File: {att.file_name} ---\n"
+                    files_context += "\nUse the above context to answer the user query. Always cite sources where appropriate (e.g. document name and page number/section if available).\n\n"
+                    m_text = f"{files_context}USER QUERY: {m_text}"
+                return m_text
+
             contents = []
             if len(all_past_messages) > 1:
                 current_role = None
@@ -151,35 +162,25 @@ class MessageListCreateView(APIView):
                 
                 for m in all_past_messages[:-1]:
                     role = "user" if m.sender == 'user' else "model"
+                    m_text = get_message_content_with_attachments(m) if role == "user" else m.content
                     
                     if role == current_role:
-                        current_parts.append(m.content)
+                        current_parts.append(m_text)
                     else:
                         if current_role:
                             contents.append(types.Content(role=current_role, parts=[types.Part(text="\n".join(current_parts))]))
                         current_role = role
-                        current_parts = [m.content]
+                        current_parts = [m_text]
                 
                 if current_role:
                     contents.append(types.Content(role=current_role, parts=[types.Part(text="\n".join(current_parts))]))
-            
-            all_atts = this_conversation.all_attachments.all()
-            files_context = ""
-            if all_atts.exists():
-                files_context = "CONTEXT FROM FILES UPLOADED BY USER:\n"
-                for att in all_atts:
-                    files_context += f"\n--- Start File: {att.file_name} ---\n{att.extracted_text}\n--- End File: {att.file_name} ---\n"
-                files_context += "\nUse the above context to answer the user query. Always cite sources where appropriate (e.g. document name and page number/section if available).\n\n"
 
-            final_user_text = user_text
+            final_user_text = get_message_content_with_attachments(new_user_msg)
             if contents and contents[-1].role == "user":
                 last_user_parts = [p.text for p in contents[-1].parts]
                 extra_context = "\n".join(last_user_parts)
-                final_user_text = f"{extra_context}\n{user_text}"
+                final_user_text = f"{extra_context}\n{final_user_text}"
                 contents.pop()
-
-            if files_context:
-                final_user_text = f"{files_context}USER QUERY: {final_user_text}"
 
             contents.append(types.Content(role="user", parts=[types.Part(text=final_user_text)]))
             try:
