@@ -1214,7 +1214,7 @@ const ChatPage = () => {
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold">About Nexus AI</h3>
-                                        <p className="text-xs text-muted-foreground">Version 1.0.0 • Focus-driven AI Workspace</p>
+                                        <p className="text-xs text-muted-foreground">Version 1.0 • Simple AI Assistant</p>
                                     </div>
                                 </div>
 
@@ -1275,57 +1275,48 @@ const ChatPage = () => {
                                         </div>
                                     ) : (
                                         <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start text-sm">
-                                            {/* Left Column: Picture Placeholder */}
+                                            {/* Left Column: Picture */}
                                             <div className="flex flex-col items-center gap-3">
-                                                <div className="w-32 h-32 rounded-2xl bg-sidebar-accent/40 border border-sidebar-border/50 flex flex-col items-center justify-center p-3 text-center relative overflow-hidden group">
-                                                    <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent group-hover:opacity-100 transition-opacity" />
-                                                    <User size={36} className="text-primary/60 mb-1" />
-                                                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-tight">
-                                                        Creator Photo Placeholder
-                                                    </span>
+                                                <div className="w-32 h-32 rounded-2xl border border-sidebar-border/50 overflow-hidden relative group shadow-lg">
+                                                    <img
+                                                        src="/robin.jpg"
+                                                        alt="Robin"
+                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    />
                                                 </div>
-                                                <span className="text-[10px] text-muted-foreground italic text-center max-w-[140px]">
-                                                    Ready to be updated with your details & photo!
-                                                </span>
                                             </div>
 
                                             {/* Right Column: Bio Details */}
                                             <div className="flex-1 space-y-4">
                                                 <div>
-                                                    <h4 className="text-lg font-bold text-foreground">Project Creator</h4>
-                                                    <p className="text-xs text-primary font-medium mt-0.5">Full Stack Developer & AI Enthusiast</p>
+                                                    <h4 className="text-lg font-bold text-foreground">Robin</h4>
+                                                    <p className="text-xs text-primary font-medium mt-0.5">MCA Graduate</p>
                                                 </div>
 
                                                 <p className="text-muted-foreground text-xs leading-relaxed">
-                                                    Hi, I'm Robin, a software developer passionate about creating web applications and exploring artificial intelligence. I enjoy turning ideas into practical solutions through clean code and thoughtful design. I am the developer behind Nexus AI. I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
+                                                    Hi, I'm a fresh graduate with the passion for creating web applications and exploring artificial intelligence. I enjoy turning ideas into practical solutions through clean code and thoughtful design. I am the developer behind Nexus AI. I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
                                                 </p>
 
                                                 <div className="pt-2">
                                                     <h5 className="text-xs font-bold text-foreground uppercase tracking-wider mb-2">Connect with me</h5>
                                                     <div className="flex flex-wrap gap-2">
                                                         <a
-                                                            href="#github"
-                                                            onClick={(e) => e.preventDefault()}
+                                                            href="https://github.com/Robin4018"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
                                                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground"
                                                         >
                                                             <Github size={14} />
                                                             <span>GitHub</span>
                                                         </a>
                                                         <a
-                                                            href="#linkedin"
-                                                            onClick={(e) => e.preventDefault()}
+                                                            href="https://www.linkedin.com/in/robin-c-5753a721b/"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
                                                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground"
                                                         >
                                                             <Linkedin size={14} />
                                                             <span>LinkedIn</span>
-                                                        </a>
-                                                        <a
-                                                            href="#portfolio"
-                                                            onClick={(e) => e.preventDefault()}
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground"
-                                                        >
-                                                            <Globe size={14} />
-                                                            <span>Portfolio</span>
                                                         </a>
                                                     </div>
                                                 </div>
