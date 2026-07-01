@@ -1197,8 +1197,6 @@ const ChatPage = () => {
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="bg-card border border-border shadow-2xl rounded-2xl max-w-xl w-full relative overflow-hidden flex flex-col max-h-[90vh]"
                         >
-                            {/* Top decorative gradient line */}
-                            <div className="h-1 w-full bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
 
                             <button
                                 onClick={() => setShowAboutModal(false)}
