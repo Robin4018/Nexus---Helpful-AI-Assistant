@@ -68,6 +68,13 @@ const ChatPage = () => {
     const { user, logout } = useContext(AuthContext);
 
     const newConvRef = useRef(null);
+    const profileMenuRef = useRef(null);
+    const profileBarRef = useRef(null);
+
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [showAboutModal, setShowAboutModal] = useState(false);
+    const [activeAboutTab, setActiveAboutTab] = useState('overview');
 
     const [conversations, setConversations] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -104,12 +111,6 @@ const ChatPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [deleteConfirmId, setDeleteConfirmId] = useState(null);
     const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = useState(false);
-    const [showProfileMenu, setShowProfileMenu] = useState(false);
-    const [showSettingsModal, setShowSettingsModal] = useState(false);
-    const [showAboutModal, setShowAboutModal] = useState(false);
-    const [activeAboutTab, setActiveAboutTab] = useState('overview');
-    const profileMenuRef = useRef(null);
-    const profileBarRef = useRef(null);
     const [latestAiMessageId, setLatestAiMessageId] = useState(null);
     const [isPaused, setIsPaused] = useState(false);
     const [isAtBottom, setIsAtBottom] = useState(true);
