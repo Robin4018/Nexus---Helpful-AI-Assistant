@@ -1311,7 +1311,7 @@ const ChatPage = () => {
 
                                             {/* Biography Details (Full Width) */}
                                             <div className="bg-sidebar-accent/5 rounded-xl p-4 border border-sidebar-border/25 leading-relaxed text-muted-foreground">
-                                                <p className="text-xs sm:text-sm">
+                                                <p className="text-xs sm:text-sm text-justify">
                                                     Hi, I'm a fresh graduate with a passion for creating web applications and exploring artificial intelligence. I enjoy turning ideas into practical solutions through clean code and thoughtful design. As the developer behind Nexus AI, I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
                                                 </p>
                                             </div>
