@@ -1134,7 +1134,7 @@ const ChatPage = () => {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="text-sm font-semibold text-foreground truncate">{user?.username || 'User'}</div>
-                                        <div className="text-xs text-muted-foreground mt-0.5 font-medium">Nexus AI Free Member</div>
+                                        <div className="text-xs text-muted-foreground mt-0.5 font-medium">Nexus AI Member</div>
                                     </div>
                                 </div>
 
@@ -1274,51 +1274,51 @@ const ChatPage = () => {
                                             </div>
                                         </div>
                                     ) : (
-                                         <div className="space-y-5 text-sm">
-                                             {/* Header Box: Avatar, Name, Info & Connect buttons */}
-                                             <div className="flex items-center gap-4 bg-sidebar-accent/15 border border-sidebar-border/30 rounded-2xl p-4">
-                                                 <div className="w-20 h-20 rounded-full border-2 border-primary/30 overflow-hidden flex-shrink-0 shadow-md">
-                                                     <img
-                                                         src="/robin.jpg"
-                                                         alt="Robin"
-                                                         className="w-full h-full object-cover"
-                                                     />
-                                                 </div>
-                                                 <div className="flex-1 min-w-0">
-                                                     <h4 className="text-lg font-bold text-foreground">Robin</h4>
-                                                     <p className="text-xs text-primary font-semibold mt-0.5">MCA Graduate</p>
-                                                     
-                                                     <div className="flex gap-2 mt-3">
-                                                         <a
-                                                             href="https://github.com/Robin4018"
-                                                             target="_blank"
-                                                             rel="noopener noreferrer"
-                                                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground shadow-sm"
-                                                         >
-                                                             <Github size={13} />
-                                                             <span>GitHub</span>
-                                                         </a>
-                                                         <a
-                                                             href="https://www.linkedin.com/in/robin-c-5753a721b/"
-                                                             target="_blank"
-                                                             rel="noopener noreferrer"
-                                                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground shadow-sm"
-                                                         >
-                                                             <Linkedin size={13} />
-                                                             <span>LinkedIn</span>
-                                                         </a>
-                                                     </div>
-                                                 </div>
-                                             </div>
+                                        <div className="space-y-5 text-sm">
+                                            {/* Header Box: Avatar, Name, Info & Connect buttons */}
+                                            <div className="flex items-center gap-4 bg-sidebar-accent/15 border border-sidebar-border/30 rounded-2xl p-4">
+                                                <div className="w-20 h-20 rounded-full border-2 border-primary/30 overflow-hidden flex-shrink-0 shadow-md">
+                                                    <img
+                                                        src="/robin.jpg"
+                                                        alt="Robin"
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <h4 className="text-lg font-bold text-foreground">Robin</h4>
+                                                    <p className="text-xs text-primary font-semibold mt-0.5">MCA Graduate</p>
 
-                                             {/* Biography Details (Full Width) */}
-                                             <div className="bg-sidebar-accent/5 rounded-xl p-4 border border-sidebar-border/25 leading-relaxed text-muted-foreground">
-                                                 <p className="text-xs sm:text-sm">
-                                                     Hi, I'm a fresh graduate with a passion for creating web applications and exploring artificial intelligence. I enjoy turning ideas into practical solutions through clean code and thoughtful design. As the developer behind Nexus AI, I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
-                                                 </p>
-                                             </div>
-                                         </div>
-                                     )}
+                                                    <div className="flex gap-2 mt-3">
+                                                        <a
+                                                            href="https://github.com/Robin4018"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground shadow-sm"
+                                                        >
+                                                            <Github size={13} />
+                                                            <span>GitHub</span>
+                                                        </a>
+                                                        <a
+                                                            href="https://www.linkedin.com/in/robin-c-5753a721b/"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-sidebar-accent hover:text-primary transition-all text-xs font-semibold text-muted-foreground shadow-sm"
+                                                        >
+                                                            <Linkedin size={13} />
+                                                            <span>LinkedIn</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Biography Details (Full Width) */}
+                                            <div className="bg-sidebar-accent/5 rounded-xl p-4 border border-sidebar-border/25 leading-relaxed text-muted-foreground">
+                                                <p className="text-xs sm:text-sm">
+                                                    Hi, I'm a fresh graduate with a passion for creating web applications and exploring artificial intelligence. I enjoy turning ideas into practical solutions through clean code and thoughtful design. As the developer behind Nexus AI, I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
