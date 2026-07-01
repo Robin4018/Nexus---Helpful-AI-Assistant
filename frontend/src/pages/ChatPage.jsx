@@ -97,7 +97,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (showProfileMenu && 
+            if (showProfileMenu &&
                 profileMenuRef.current && !profileMenuRef.current.contains(event.target) &&
                 profileBarRef.current && !profileBarRef.current.contains(event.target)) {
                 setShowProfileMenu(false);
@@ -326,7 +326,7 @@ const ChatPage = () => {
                 newConvRef.current = currentId;
                 myFetchConversations();
                 navigate(`/chat/${currentId}`);
-                
+
                 // Construct temporary user message state
                 const userMsg = {
                     sender: 'user',
@@ -336,10 +336,10 @@ const ChatPage = () => {
                 };
                 setMessages([userMsg]);
                 setInput('');
-                
+
                 // Send the message
                 const msgResponse = await api.post(`conversations/${currentId}/messages/`, { content: userQuery });
-                
+
                 setMessages([msgResponse.data.user_message, msgResponse.data.ai_message]);
                 setLatestAiMessageId(msgResponse.data.ai_message.id);
                 setIsPaused(false);
@@ -582,7 +582,7 @@ const ChatPage = () => {
                                     className="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-foreground/80 hover:text-primary hover:bg-sidebar-accent/80 rounded-lg transition-all duration-200 text-left w-full border-t border-border/40"
                                 >
                                     <Info size={15} className="text-primary/70" />
-                                    <span>About Creator</span>
+                                    <span>About</span>
                                 </button>
                             </motion.div>
                         )}
@@ -689,7 +689,7 @@ const ChatPage = () => {
                                     transition={{ delay: 0.2 }}
                                     className="text-muted-foreground text-lg max-w-md mx-auto"
                                 >
-                                    I am your intelligent assistant. Ask me anything below to begin!
+                                    I am your AI assistant. Ask me anything below to begin!
                                 </motion.p>
                             </div>
                         )}
@@ -1118,7 +1118,7 @@ const ChatPage = () => {
                             >
                                 <X size={16} />
                             </button>
-                            
+
                             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                                 <Settings size={20} className="text-primary" />
                                 <span>Settings</span>
@@ -1167,7 +1167,7 @@ const ChatPage = () => {
                                                 <span>Sign Out</span>
                                             </span>
                                         </button>
-                                        
+
                                         <button
                                             onClick={() => {
                                                 setShowSettingsModal(false);
@@ -1199,7 +1199,7 @@ const ChatPage = () => {
                         >
                             {/* Top decorative gradient line */}
                             <div className="h-1 w-full bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
-                            
+
                             <button
                                 onClick={() => setShowAboutModal(false)}
                                 className="absolute top-5 right-4 p-1.5 rounded-lg hover:bg-sidebar-accent text-muted-foreground hover:text-foreground transition-colors"
@@ -1222,23 +1222,21 @@ const ChatPage = () => {
                                 <div className="flex border-b border-border mb-6">
                                     <button
                                         onClick={() => setActiveAboutTab('overview')}
-                                        className={`flex-1 py-2 text-sm font-semibold border-b-2 transition-all ${
-                                            activeAboutTab === 'overview'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-muted-foreground hover:text-foreground'
-                                        }`}
+                                        className={`flex-1 py-2 text-sm font-semibold border-b-2 transition-all ${activeAboutTab === 'overview'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-muted-foreground hover:text-foreground'
+                                            }`}
                                     >
                                         What & Why
                                     </button>
                                     <button
                                         onClick={() => setActiveAboutTab('creator')}
-                                        className={`flex-1 py-2 text-sm font-semibold border-b-2 transition-all ${
-                                            activeAboutTab === 'creator'
-                                                ? 'border-primary text-primary'
-                                                : 'border-transparent text-muted-foreground hover:text-foreground'
-                                        }`}
+                                        className={`flex-1 py-2 text-sm font-semibold border-b-2 transition-all ${activeAboutTab === 'creator'
+                                            ? 'border-primary text-primary'
+                                            : 'border-transparent text-muted-foreground hover:text-foreground'
+                                            }`}
                                     >
-                                        The Creator
+                                        Developer
                                     </button>
                                 </div>
 
@@ -1257,19 +1255,19 @@ const ChatPage = () => {
                                                 <h4 className="font-bold text-foreground mb-1">Key Capabilities</h4>
                                                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                                                     <li className="flex items-start gap-2 bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg p-2 text-xs">
-                                                        <span className="text-primary font-bold">💬</span>
+                                                        <span className="text-primary font-bold"></span>
                                                         <span><strong>Gemini Assist:</strong> Advanced LLM reasoning using the Google Gemini model.</span>
                                                     </li>
                                                     <li className="flex items-start gap-2 bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg p-2 text-xs">
-                                                        <span className="text-primary font-bold">📁</span>
+                                                        <span className="text-primary font-bold"></span>
                                                         <span><strong>Doc Uploads:</strong> Chat with PDFs, DOCX, MD, and TXT files up to 10MB.</span>
                                                     </li>
                                                     <li className="flex items-start gap-2 bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg p-2 text-xs">
-                                                        <span className="text-primary font-bold">⚡</span>
+                                                        <span className="text-primary font-bold"></span>
                                                         <span><strong>Instant UX:</strong> Real-time streaming response render with markdown formatting.</span>
                                                     </li>
                                                     <li className="flex items-start gap-2 bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg p-2 text-xs">
-                                                        <span className="text-primary font-bold">🔒</span>
+                                                        <span className="text-primary font-bold"></span>
                                                         <span><strong>Self-Service:</strong> Complete control of workspace data & account removal.</span>
                                                     </li>
                                                 </ul>
@@ -1297,9 +1295,9 @@ const ChatPage = () => {
                                                     <h4 className="text-lg font-bold text-foreground">Project Creator</h4>
                                                     <p className="text-xs text-primary font-medium mt-0.5">Full Stack Developer & AI Enthusiast</p>
                                                 </div>
-                                                
+
                                                 <p className="text-muted-foreground text-xs leading-relaxed">
-                                                    I am the developer behind Nexus AI. I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
+                                                    Hi, I'm Robin, a software developer passionate about creating web applications and exploring artificial intelligence. I enjoy turning ideas into practical solutions through clean code and thoughtful design. I am the developer behind Nexus AI. I built this application to demonstrate how a modern React single-page app can integrate with a clean Django REST Framework backend to build contextual, fast, and feature-rich AI integrations.
                                                 </p>
 
                                                 <div className="pt-2">
