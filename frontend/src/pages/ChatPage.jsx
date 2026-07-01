@@ -152,7 +152,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         if (id) {
-            if (newConvRef.current === id) {
+            if (newConvRef.current == id) {
                 newConvRef.current = null;
                 setLatestAiMessageId(null);
             } else {
