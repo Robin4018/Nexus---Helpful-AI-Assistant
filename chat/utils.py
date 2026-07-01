@@ -7,11 +7,15 @@ from google.genai import types
 def extract_text_from_file(file_path, file_type):
     """
     Given a local file path and a mime-type, extract readable text if it is a document.
+    Supports PDF, DOCX (including tables), CSV, Markdown, text, and other files.
     """
     text_content = ""
     try:
         ft = file_type.lower()
-        if 'pdf' in ft or file_path.endswith('.pdf'):
+        file_path_lower = file_path.lower()
+        
+        # 1. PDF Documents
+        if 'pdf' in ft or file_path_lower.endswith('.pdf'):
             reader = pypdf.PdfReader(file_path)
             pages_text = []
             for i, page in enumerate(reader.pages):
@@ -19,18 +23,74 @@ def extract_text_from_file(file_path, file_type):
                 if txt:
                     pages_text.append(f"--- Page {i+1} ---\n{txt}")
             text_content = "\n\n".join(pages_text)
-        elif 'wordprocessingml.document' in ft or file_path.endswith('.docx'):
+            
+        # 2. DOCX Documents (Extracts both paragraphs and table text)
+        elif 'wordprocessingml.document' in ft or file_path_lower.endswith('.docx'):
             doc = docx.Document(file_path)
-            paragraphs_text = [p.text for p in doc.paragraphs if p.text]
-            text_content = "\n".join(paragraphs_text)
-        elif 'msword' in ft or file_path.endswith('.doc'):
+            full_text = []
+            
+            # Paragraph text
+            for p in doc.paragraphs:
+                if p.text.strip():
+                    full_text.append(p.text)
+            
+            # Table text (very common in resume layouts, CVs, and spreadsheets)
+            for table in doc.tables:
+                for row in table.rows:
+                    row_cells = []
+                    for cell in row.cells:
+                        cell_text = " ".join([p.text.strip() for p in cell.paragraphs if p.text.strip()])
+                        if cell_text:
+                            row_cells.append(cell_text)
+                    if row_cells:
+                        # De-duplicate adjacent identical cell texts due to merged cells
+                        unique_cells = []
+                        for cell_val in row_cells:
+                            if not unique_cells or unique_cells[-1] != cell_val:
+                                unique_cells.append(cell_val)
+                        full_text.append(" | ".join(unique_cells))
+            
+            text_content = "\n".join(full_text)
+            
+        # 3. DOC Documents (Classic binary Word doc)
+        elif 'msword' in ft or file_path_lower.endswith('.doc'):
             text_content = "[Binary .doc file loaded. Direct text extraction is limited. Please use docx or pdf for best results.]"
-        elif 'text/' in ft or file_path.endswith(('.txt', '.md', '.json', '.html', '.css', '.js')):
+            
+        # 4. Text-based files (TXT, MD, CSV, JSON, code files, etc.)
+        elif (
+            'text/' in ft 
+            or 'json' in ft 
+            or 'csv' in ft 
+            or 'xml' in ft 
+            or 'yaml' in ft 
+            or file_path_lower.endswith((
+                '.txt', '.md', '.markdown', '.json', '.html', '.htm', '.css', '.js', 
+                '.ts', '.jsx', '.tsx', '.py', '.java', '.c', '.cpp', '.h', '.cs', 
+                '.go', '.rs', '.php', '.rb', '.sh', '.bat', '.ps1', '.sql', '.csv', 
+                '.tsv', '.xml', '.yaml', '.yml', '.ini', '.conf', '.log', '.env'
+            ))
+        ):
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 text_content = f.read()
+                
+        # 5. Default fallback: detect binary vs text files
         else:
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                text_content = f.read()
+            # Check for null bytes to avoid dumping binary garbage as text
+            is_binary = False
+            if os.path.exists(file_path):
+                try:
+                    with open(file_path, 'rb') as f:
+                        chunk = f.read(1024)
+                        is_binary = b'\0' in chunk
+                except Exception:
+                    pass
+            
+            if is_binary:
+                text_content = f"[Binary file '{os.path.basename(file_path)}' detected. Direct text extraction is not supported.]"
+            else:
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    text_content = f.read()
+                    
     except Exception as e:
         print(f"Error extracting text from file {file_path}: {e}")
         text_content = f"Error reading document context: {str(e)}"
