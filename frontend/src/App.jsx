@@ -32,15 +32,7 @@ const AnimatedRoutes = () => {
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
 
                 <Route
-                    path="/chat"
-                    element={
-                        <ProtectedRoute>
-                            <ChatPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/chat/:id"
+                    path="/chat/:id?"
                     element={
                         <ProtectedRoute>
                             <ChatPage />
