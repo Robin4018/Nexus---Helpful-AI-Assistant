@@ -1225,7 +1225,7 @@ const ChatPage = () => {
                                             : 'border-transparent text-muted-foreground hover:text-foreground'
                                             }`}
                                     >
-                                        What & Why
+                                        Discription
                                     </button>
                                     <button
                                         onClick={() => setActiveAboutTab('creator')}
