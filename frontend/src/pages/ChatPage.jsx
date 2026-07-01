@@ -649,15 +649,7 @@ const ChatPage = () => {
                         </h2>
                     </div>
 
-                    {latestAiMessageId && (
-                        <button
-                            onClick={() => setIsPaused(!isPaused)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-full transition-all text-xs font-bold uppercase tracking-widest"
-                        >
-                            {isPaused ? <Play size={14} fill="currentColor" /> : <Pause size={14} fill="currentColor" />}
-                            <span>{isPaused ? "Resume" : "Pause"} AI</span>
-                        </button>
-                    )}
+
                 </header>
 
                 <div
@@ -1015,18 +1007,33 @@ const ChatPage = () => {
                                         disabled={loading}
                                     />
 
-                                    <button
-                                        type="submit"
-                                        disabled={(!input.trim() && attachments.length === 0) || loading}
-                                        className={cn(
-                                            "p-2.5 rounded-lg transition-all shadow-lg mr-1",
-                                            (input.trim() || attachments.length > 0) && !loading
-                                                ? "bg-primary text-primary-foreground hover:scale-105 active:scale-95"
-                                                : "bg-muted text-muted-foreground/30"
-                                        )}
-                                    >
-                                        <Send size={18} className={(input.trim() || attachments.length > 0) ? "translate-x-0.5 -translate-y-0.5" : ""} />
-                                    </button>
+                                    {latestAiMessageId ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsPaused(!isPaused)}
+                                            className="p-2.5 rounded-lg transition-all shadow-lg mr-1 bg-primary text-primary-foreground hover:scale-105 active:scale-95 flex items-center justify-center animate-fade-in"
+                                            title={isPaused ? "Resume AI" : "Pause AI"}
+                                        >
+                                            {isPaused ? <Play size={18} fill="currentColor" /> : <Pause size={18} fill="currentColor" />}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="submit"
+                                            disabled={(!input.trim() && attachments.length === 0) || loading}
+                                            className={cn(
+                                                "p-2.5 rounded-lg transition-all shadow-lg mr-1",
+                                                (input.trim() || attachments.length > 0) && !loading
+                                                    ? "bg-primary text-primary-foreground hover:scale-105 active:scale-95"
+                                                    : "bg-muted text-muted-foreground/30"
+                                            )}
+                                        >
+                                            {loading ? (
+                                                <Loader2 size={18} className="animate-spin" />
+                                            ) : (
+                                                <Send size={18} className={(input.trim() || attachments.length > 0) ? "translate-x-0.5 -translate-y-0.5" : ""} />
+                                            )}
+                                        </button>
+                                    )}
                                 </form>
                             </div>
                             <p className="text-center mt-3 text-[10px] text-muted-foreground/60 font-medium tracking-wide">
